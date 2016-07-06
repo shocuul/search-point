@@ -17,6 +17,8 @@ export class WpApi {
     }
 
     getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
+        console.log('lat='+latitude);
+        console.log('lon='+longitude);
         var body = "lat=" + latitude + "&lon=" + longitude + "&radius=" + radius;
         if(category != undefined){
         body = body.concat("&cat=" + category);

@@ -54,15 +54,12 @@ export class AppProvider {
   }
 
   getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
-    this.wpApi.getItems(latitude,longitude,radius,category,location,search).map(res => res.json()).subscribe(data => {
+    this.wpApi.getItems(latitude,longitude,radius,category,location,search).subscribe(res => {
       let items:Array<Item> = [];
-      console.log(data);
-      /*
-      data.map((item:any) =>{
-          console.log(item.name);
+      (<Object[]>res.json().map((item:any) =>{
         items.push(new Item(item.ID,item.post_content,item.post_title,item.link,parseInt(item.category_id),item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
-      });
+      }));
       items.forEach((item:Item)=>{
         if(0 > this._availableCategoryId.indexOf(item._category_id)){
           this._availableCategoryId.push(item._category_id);
@@ -71,7 +68,6 @@ export class AppProvider {
       this._items.next(items);
       this.filterCategories();
       this._baseItems = items;
-      */
     })
   }
 
