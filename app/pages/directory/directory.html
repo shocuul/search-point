@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Directorio
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="directory">
+  <ion-list>
+    <div *ngFor="let parent of appProvider.categories | async">
+    <ion-list-header>
+      <ion-row>
+        <ion-col width-10>
+          <img src="{{parent._icon}}"> 
+        </ion-col>
+        <ion-col> <h1>{{parent._name}}</h1></ion-col>
+      </ion-row>
+         
+        
+    </ion-list-header>
+    <ion-item *ngFor="let item of parent._children" (click)="goToCategory(item)">
+      <ion-avatar item-left>
+        <img src="{{item._icon}}">
+      </ion-avatar>
+      <h2>{{item._name}}</h2>
+    </ion-item>
+    </div>
+  </ion-list>
+  <!--<div style="display:flex; flex-wrap: wrap; align-items:stretch;">
+    <div *ngFor="let parent of appProvider.categories | async; let i = index" style="flex:0 0 calc(100% / 3 -2px); width:33%;">
+      <img src="{{parent._icon}}" style="width:90%;">
+      <p>{{parent._name}}</p>
+      <div *ngFor="let item of parent._children; let i = index" style="flex:0 0 calc(100% / 3 -2px); width:33%;">
+      <img src="{{item._icon}}" style="width:90%;">
+      <p>{{item._name}}</p>
+      </div>
+    </div>
+  </div>-->
+</ion-content>
