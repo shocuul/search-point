@@ -23,7 +23,9 @@
 
 
 <ion-content padding>
-  {{cat._id}}
-  {{cat._name}}
   
+  <ion-card *ngFor="let item of provider.items | async">
+    {{item._name}}
+  </ion-card>
+
 </ion-content>

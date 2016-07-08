@@ -12,6 +12,6 @@ export class DirectoryPage {
   constructor(private navController: NavController, private appProvider: AppProvider) {
   }
   goToCategory(cat: Category){
-    this.navController.push(CategoryPage,{category:cat});
+    this.navController.push(CategoryPage,{category:cat, app:this.appProvider});
   }
 }
