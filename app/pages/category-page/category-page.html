@@ -25,7 +25,14 @@
 <ion-content padding>
   
   <ion-card *ngFor="let item of provider.items | async">
-    {{item._name}}
+    <ion-row>
+      <ion-col width-20>
+        <img src="{{item._image}}">
+      </ion-col>
+      <ion-col>
+        <h2>{{item._name}}</h2>
+      </ion-col>
+    </ion-row>
   </ion-card>
 
 </ion-content>

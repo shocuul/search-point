@@ -69,6 +69,7 @@ export class Location extends Post{
 
 export class Item extends Post{
     _category_id:number;
+    _image:string;
     _marker:string;
     _address:string;
     _gpsLatitude:number;
@@ -86,8 +87,9 @@ export class Item extends Post{
     _alternativeContent:string;
     _social:SocialData[];
     _gallery:string[];
-    constructor(id:number, description:string, name:string, link:string, category_id:number, marker:string, address:string, gpsLatitude:number, gpsLongitude:number, telephone:string, email:string, web:string, alternativeContent:string){
+    constructor(id:number, description:string, name:string, link:string, category_id:number,image:string, marker:string, address:string, gpsLatitude:number, gpsLongitude:number, telephone:string, email:string, web:string, alternativeContent:string){
         super(id,description,name,link);
+        this._image = image;
         this._category_id = category_id;
         this._marker = marker;
         this._address = address;

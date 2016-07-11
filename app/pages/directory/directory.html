@@ -6,7 +6,7 @@
 
 <ion-content padding class="directory">
   <ion-list>
-    <div *ngFor="let parent of appProvider.categories | async">
+    <div *ngFor="let parent of appProvider.filter | async">
     <ion-list-header>
       <ion-row>
         <ion-col width-10>

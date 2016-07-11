@@ -57,7 +57,7 @@ export class AppProvider {
     this.wpApi.getItems(latitude,longitude,radius,category,location,search).subscribe(res => {
       let items:Array<Item> = [];
       (<Object[]>res.json().map((item:any) =>{
-        items.push(new Item(item.ID,item.post_content,item.post_title,item.link,parseInt(item.category_id),item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
+        items.push(new Item(item.ID,item.post_content,item.post_title,item.link,parseInt(item.category_id),item.image,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
       }));
       items.forEach((item:Item)=>{
