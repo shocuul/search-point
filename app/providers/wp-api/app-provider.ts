@@ -50,7 +50,7 @@ export class AppProvider {
 
   constructor(private wpApi: WpApi) {
     this.loadInitialData();
-    this._availableCategoryId = new Array<number>();
+    //this._availableCategoryId = new Array<number>();
   }
 
   getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
@@ -60,14 +60,18 @@ export class AppProvider {
         items.push(new Item(item.ID,item.post_content,item.post_title,item.link,parseInt(item.category_id),item.image,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
       }));
+      this._availableCategoryId = new Array<number>();
       items.forEach((item:Item)=>{
         if(0 > this._availableCategoryId.indexOf(item._category_id)){
           this._availableCategoryId.push(item._category_id);
         }
       })
+      console.log(this._availableCategoryId);
       this._items.next(items);
+      
       this.filterCategories();
       this._baseItems = items;
+      console.log(this._baseItems);
     })
   }
 
@@ -77,7 +81,7 @@ export class AppProvider {
     let items:Array<Item> = this._items.getValue();
     
     items = items.filter(item => item._category_id === catId);
-    console.log(items);
+    //console.log(items);
     this._items.next(items);
     //this._items.next(this._items.getValue().filter(item => item._category_id === catId));
   }
@@ -87,14 +91,18 @@ export class AppProvider {
   }
 
   public filterCategories(){
-    let allCategories:Array<Category> = this._categories.getValue();
+    console.log("Estoy en filter categories");
+    console.log(this._categories.getValue())
+    var allCategories:Array<Category> = this._categories.getValue();
     //console.log("Before Filter");
     //console.log(allCategories);
     //allCategories.splice(0,2);
     
+    console.log(this._availableCategoryId);
+    
     allCategories.forEach((parent:Category,indexParent:number)=>{
             parent._children.forEach((child:Category, indexChild:number)=>{
-                console.log(parent._name + ' ' + indexChild);
+                //console.log(parent._name + ' ' + indexChild);
 
                 if(this._availableCategoryId.indexOf(child._id) > -1){
                     child.setAvailable();
@@ -116,9 +124,9 @@ export class AppProvider {
       })
       //console.log("After Filter");
       //console.log(allCategories);
-      
+      console.log(allCategories);
       this._filter.next(allCategories);
-      console.log(this._filter.getValue());
+      //console.log(this._filter.getValue());
       
       //console.log(this._filter.value);
     

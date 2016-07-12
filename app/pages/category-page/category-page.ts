@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import {Category} from '../../providers/wp-api/data-clases';
 import {AppProvider} from '../../providers/wp-api/app-provider';
 
+
 /*
   Generated class for the CategoryPagePage page.
 
@@ -19,8 +20,8 @@ export class CategoryPage {
   constructor(private nav: NavController,private params: NavParams) {
     this.cat = params.get('category');
     this.provider = params.get('app');
-    
-    console.log(this.provider);
   }
+
+  
 
 }

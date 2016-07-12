@@ -1,12 +1,17 @@
 <ion-header>
   <ion-navbar>
     <ion-title class="search-point-logo">&nbsp;</ion-title>
+    <ion-buttons end>
+    <button (click)="showLocationPopover($event)">
+      <ion-icon name="arrow-dropdown"></ion-icon>
+    </button>
+  </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding class="directory">
+<ion-content class="directory">
   <ion-list>
-    <div *ngFor="let parent of appProvider.filter | async">
+    <div *ngFor="let parent of appProvider.filter | async; let i = index">
     <ion-list-header>
       <ion-row>
         <ion-col width-10>
@@ -24,6 +29,11 @@
       <h2>{{item._name}}</h2>
     </ion-item>
     </div>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let m of appProvider.items | async">
+      {{m._name}}
+    </ion-item>
   </ion-list>
   <!--<div style="display:flex; flex-wrap: wrap; align-items:stretch;">
     <div *ngFor="let parent of appProvider.categories | async; let i = index" style="flex:0 0 calc(100% / 3 -2px); width:33%;">

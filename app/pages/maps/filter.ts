@@ -20,7 +20,7 @@ export class FilterPopover {
        //this.filter = this.appProvider.filter;
         this.provider = params.get('provider');
         this.provider.filter.subscribe((data) => this.filter = data);
-       //console.log(this.filter);
+        console.log(this.filter);
     }
     filterData(category:Category){
         this.provider.filterItems(category._id);

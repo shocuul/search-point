@@ -1,0 +1,7 @@
+<ion-list>
+    <ion-item class="selected"><ion-icon name="locate" item-left></ion-icon>Geolocalización</ion-item>
+    <div *ngFor="let parentLocation of locations">
+        <ion-item (click)="search(parentLocation)">{{parentLocation._name}}</ion-item>
+        <ion-item *ngFor="let childLocation of parentLocation._children" (click)="search(childLocation)"> - {{childLocation._name}}</ion-item>
+    </div>
+</ion-list>
