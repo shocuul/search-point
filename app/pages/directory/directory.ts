@@ -18,7 +18,6 @@ export class DirectoryPage implements OnInit {
     Geolocation.getCurrentPosition().then((resp)=>{
       this.appProvider.getItems(resp.coords.latitude,resp.coords.longitude);
     })
-    console.log(this.appProvider);
   }
 
   goToCategory(cat: Category){

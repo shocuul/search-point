@@ -14,8 +14,7 @@ export class LocationPopover implements OnInit {
 
     ngOnInit() { 
         this.provider = this.params.get('provider');
-        this.provider.locations.subscribe((data) => this.locations = data);
-        console.log(this.provider);    
+        this.provider.locations.subscribe((data) => this.locations = data); 
     }
 
     search(location:Location){

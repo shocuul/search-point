@@ -13,6 +13,7 @@ class Post {
 
 export class Category extends Post{
     _children:Category[];
+    _backup:Category[];
     _items:Item[];
     _icon:string;
     _marker:string;
@@ -33,6 +34,12 @@ export class Category extends Post{
     setAvailable(){
         this._available = true;
     }
+
+    restoreChild(){
+        this._children = this._backup;
+        console.log(this._children);
+
+    }
     
     setUnavailable(){
         this._available = false;
@@ -42,6 +49,12 @@ export class Category extends Post{
             this._children = new Array<Category>();
         }
         this._children.push(child);
+        
+        if(this._backup == undefined){
+            this._backup = new Array<Category>();
+        }
+        this._backup.push(child);
+        
     }
 }
 interface SocialData{

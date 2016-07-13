@@ -27,5 +27,9 @@ export class FilterPopover {
         this.view.dismiss();
         console.log(category._id);
     }
+    restoreData(){
+        this.provider.restoreItems();
+        this.view.dismiss();
+    }
 
 }

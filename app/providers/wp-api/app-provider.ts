@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map';
   for more info on providers and Angular 2 DI.
 */
 @Injectable()
-export class AppProvider {
+export class AppProvider{
 
   //Categories
 
@@ -23,7 +23,7 @@ export class AppProvider {
 
   public categories:Observable<Array<Category>> = this._categories.asObservable();
 
-  private _baseCategories:Array<Category>;
+  private _baseCategories : Array<Category>;
 
   private _filter: BehaviorSubject<Array<Category>> = new BehaviorSubject([]);
 
@@ -50,9 +50,8 @@ export class AppProvider {
 
   constructor(private wpApi: WpApi) {
     this.loadInitialData();
-    //this._availableCategoryId = new Array<number>();
   }
-
+  //Good
   getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
     this.wpApi.getItems(latitude,longitude,radius,category,location,search).subscribe(res => {
       let items:Array<Item> = [];
@@ -66,15 +65,15 @@ export class AppProvider {
           this._availableCategoryId.push(item._category_id);
         }
       })
-      console.log(this._availableCategoryId);
+      //console.log(this._availableCategoryId);
       this._items.next(items);
       
       this.filterCategories();
       this._baseItems = items;
-      console.log(this._baseItems);
+      //console.log(this._baseItems);
     })
   }
-
+  //Good
   public filterItems(catId:number){
     this.restoreItems();
     //this._baseItems = this._items.getValue();
@@ -90,21 +89,37 @@ export class AppProvider {
     this._items.next(this._baseItems);
   }
 
-  public filterCategories(){
-    console.log("Estoy en filter categories");
-    console.log(this._categories.getValue())
-    var allCategories:Array<Category> = this._categories.getValue();
+  filterCategories(){
+    //console.log("Estoy en filter categories");
+    //console.log(this._categories.getValue())
+    let allCategories:Array<Category>  = this._categories.getValue();
+
+    //console.log(allCategories);
+    
     //console.log("Before Filter");
     //console.log(allCategories);
     //allCategories.splice(0,2);
     
-    console.log(this._availableCategoryId);
+    //console.log(allCategories);
     
     allCategories.forEach((parent:Category,indexParent:number)=>{
+      parent.restoreChild();
+      console.log("////////////////////////////////");
+      console.log("Categoria: " + parent._name);
+      console.log("////// Children //////////////")
+      console.log(parent._children);
+      console.log("////// BackUp //////////////////");
+      console.log(parent._backup);
+          //console.log("Estoy en: " +parent._name);
             parent._children.forEach((child:Category, indexChild:number)=>{
                 //console.log(parent._name + ' ' + indexChild);
+                //console.log(child._name);
+                
+
+                
 
                 if(this._availableCategoryId.indexOf(child._id) > -1){
+                    //console.log(child._name + ' Encontrado');
                     child.setAvailable();
                 }else{
                     parent.deleteChild(child);
@@ -124,7 +139,8 @@ export class AppProvider {
       })
       //console.log("After Filter");
       //console.log(allCategories);
-      console.log(allCategories);
+      //console.log(this._baseCategories);
+      //console.log(allCategories);
       this._filter.next(allCategories);
       //console.log(this._filter.getValue());
       
@@ -180,7 +196,7 @@ export class AppProvider {
           this._categories.next(result);
       });
 */
-         let categories:Array<Category> = [];
+         var categories:Array<Category> = [];
          (<Object[]>res.json().map((category: any) =>{
             if(category.parent == 0)
             {
@@ -196,7 +212,7 @@ export class AppProvider {
                 }
               })
             }));
-            this._baseCategories = categories;
+            
             //this._filter.next(categories);
             this._categories.next(categories);
       },

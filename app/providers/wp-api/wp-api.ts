@@ -17,11 +17,8 @@ export class WpApi {
     }
 
     getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
-        //console.log('lat='+latitude);
-        //console.log('lon='+longitude);
         var body = "";
         if(latitude != undefined && longitude != undefined && radius != undefined){
-            console.log("Estoy en latitute");
             body = body.concat("lat=" + latitude + "&lon=" + longitude + "&radius=" + radius);
         }
         if(category != undefined){

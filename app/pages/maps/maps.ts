@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavController, Modal, Loading, Popover} from 'ionic-angular';
 import {Category, Item} from '../../providers/wp-api/data-clases'
 import {AppProvider} from '../../providers/wp-api/app-provider';
@@ -12,11 +12,13 @@ import { GOOGLE_MAPS_DIRECTIVES, GOOGLE_MAPS_PROVIDERS } from 'angular2-google-m
   directives:[GOOGLE_MAPS_DIRECTIVES],
   providers:[GOOGLE_MAPS_PROVIDERS, AppProvider]
 })
-export class MapsPage {
+export class MapsPage implements OnInit {
   lat: number;
   lng: number;
-  constructor(private navController: NavController, private appProvider: AppProvider) {
-    this.loadMap();
+  constructor(private navController: NavController, private appProvider: AppProvider) { }
+
+  ngOnInit(){
+     this.loadMap();
   }
 
   loadMap(){
