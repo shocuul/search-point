@@ -19,13 +19,11 @@ export class FilterPopover {
         //filter.subscribe((data) => this.filter = data);
        //this.filter = this.appProvider.filter;
         this.provider = params.get('provider');
-        this.provider.filter.subscribe((data) => this.filter = data);
-        console.log(this.filter);
+        this.provider.filteredCategories$.subscribe((data) => this.filter = data);
     }
     filterData(category:Category){
         this.provider.filterItems(category._id);
         this.view.dismiss();
-        console.log(category._id);
     }
     restoreData(){
         this.provider.restoreItems();

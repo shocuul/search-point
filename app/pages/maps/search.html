@@ -17,7 +17,7 @@
       <ion-item>
         <ion-label>Categoria</ion-label>
         <ion-select [(ngModel)]="category">
-          <div *ngFor="let headCategory of appProvider.categories | async">
+          <div *ngFor="let headCategory of appProvider.categories$ | async">
             <ion-option value="{{headCategory._id}}"><img src="{{headCategory._icon}}">{{headCategory._name}}</ion-option>
             <ion-option *ngFor="let child of headCategory._children" value="{{child._id}}"> - {{child._name}}</ion-option>
           </div>
@@ -31,7 +31,7 @@
       <ion-item *ngIf="showLocation">
         <ion-label>Ciudades</ion-label>
         <ion-select [(ngModel)]="location">
-          <div *ngFor="let headCategory of appProvider.locations | async">
+          <div *ngFor="let headCategory of appProvider.locations$ | async">
             <ion-option value="{{headCategory._id}}"><img src="{{headCategory._icon}}">{{headCategory._name}}</ion-option>
             <ion-option *ngFor="let child of headCategory._children" value="{{child._id}}"> - {{child._name}}</ion-option>
           </div>

@@ -11,7 +11,7 @@
 
 <ion-content class="directory">
   <ion-list>
-    <div *ngFor="let parent of appProvider.filter | async; let i = index">
+    <div *ngFor="let parent of appProvider.filteredCategories$ | async; let i = index">
     <ion-list-header>
       <ion-row>
         <ion-col width-10>
@@ -31,7 +31,7 @@
     </div>
   </ion-list>
   <ion-list>
-    <ion-item *ngFor="let m of appProvider.categories | async">
+    <ion-item *ngFor="let m of appProvider.categories$ | async">
       {{m._name}}
       <div *ngFor="let item of m._children"> {{item._name}} </div>
     </ion-item>

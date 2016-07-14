@@ -17,40 +17,109 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class AppProvider{
 
+  /* 
+  Service Storage
+  */
+
+  private dataStorage:{
+    categories: Category[],
+    baseCategories: Category[],
+    filteredCategories: Category[],
+    items:Item[],
+    backUpItems:Item[],
+    locations:Location[]
+  }
+
+  /* 
+  Category 
+  */
+
+  private _categories$: BehaviorSubject<Array<Category>>;
+
+  private _filteredCategories$: BehaviorSubject<Array<Category>>;
+
+  /*
+  Items
+  */
+
+  private _items$: BehaviorSubject<Array<Item>>;
+
+  /*
+  Locations
+   */
+
+  private _locations$: BehaviorSubject<Array<Location>>;
+
+  /* 
+  Other Stuff
+  */
+  public _availableCategoryId:number[];
   //Categories
-
-  private _categories: BehaviorSubject<Array<Category>> = new BehaviorSubject([]);
-
-  public categories:Observable<Array<Category>> = this._categories.asObservable();
-
-  private _baseCategories : Array<Category>;
-
-  private _filter: BehaviorSubject<Array<Category>> = new BehaviorSubject([]);
-
-  public filter:Observable<Array<Category>> = this._filter.asObservable();
-
 
   //Items
 
-  private _items: BehaviorSubject<Array<Item>> = new BehaviorSubject([]);
 
-  public items:Observable<Array<Item>> = this._items.asObservable();
+  //public items:Observable<Array<Item>> = this._items.asObservable();
 
-  private _baseItems : Array<Item>;
+  //private _baseItems : Array<Item>;
 
   //Locations
 
-  private _locations: BehaviorSubject<Array<Location>> = new BehaviorSubject([]);
+  //private _locations: BehaviorSubject<Array<Location>> = new BehaviorSubject([]);
 
-  public locations:Observable<Array<Location>> = this._locations.asObservable();
+  //public locations:Observable<Array<Location>> = this._locations.asObservable();
 
-  public _availableCategoryId:number[];
+  
 
   //categories: Array<Category>;
 
   constructor(private wpApi: WpApi) {
+    this.initSubjects();
     this.loadInitialData();
+    this.initInternalStorage();
   }
+
+  initSubjects(){
+    // Init all BehaviorSubject of the service.
+    this._categories$ = <BehaviorSubject<Category[]>> new BehaviorSubject([]);
+    this._items$ = <BehaviorSubject<Item[]>> new BehaviorSubject([]);
+    this._filteredCategories$ = <BehaviorSubject<Category[]>> new BehaviorSubject([]);
+    this._locations$ = <BehaviorSubject<Location[]>> new BehaviorSubject([]);
+  }
+
+  initInternalStorage(){
+    this.dataStorage = {
+      categories: [],
+      baseCategories:[],
+      filteredCategories: [],
+      items:[],
+      backUpItems:[],
+      locations:[]
+    };
+  }
+
+  /* 
+  Service Getters 
+  */
+
+  get categories$(){
+    return this._categories$.asObservable();
+  }
+
+  get items$(){
+    return this._items$.asObservable();
+  }
+
+  get filteredCategories$(){
+    return this._filteredCategories$.asObservable();
+  }
+
+  get locations$(){
+    return this._locations$.asObservable();
+  }
+
+  ///////////////////////////////////////////////
+  
   //Good
   getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
     this.wpApi.getItems(latitude,longitude,radius,category,location,search).subscribe(res => {
@@ -65,11 +134,13 @@ export class AppProvider{
           this._availableCategoryId.push(item._category_id);
         }
       })
+      this.dataStorage.items = items;
+      this.dataStorage.backUpItems = items;
       //console.log(this._availableCategoryId);
-      this._items.next(items);
+      this._items$.next(this.dataStorage.items);
       
       this.filterCategories();
-      this._baseItems = items;
+      //this._baseItems = items;
       //console.log(this._baseItems);
     })
   }
@@ -77,22 +148,24 @@ export class AppProvider{
   public filterItems(catId:number){
     this.restoreItems();
     //this._baseItems = this._items.getValue();
-    let items:Array<Item> = this._items.getValue();
+    let items:Array<Item> = this.dataStorage.items;
     
     items = items.filter(item => item._category_id === catId);
     //console.log(items);
-    this._items.next(items);
+    this.dataStorage.items = items;
+    this._items$.next(this.dataStorage.items);
     //this._items.next(this._items.getValue().filter(item => item._category_id === catId));
   }
 
   restoreItems(){
-    this._items.next(this._baseItems);
+    this.dataStorage.items = this.dataStorage.backUpItems;
+    this._items$.next(this.dataStorage.items);
   }
 
   filterCategories(){
     //console.log("Estoy en filter categories");
     //console.log(this._categories.getValue())
-    let allCategories:Array<Category>  = this._categories.getValue();
+    let allCategories:Array<Category>  = this.dataStorage.baseCategories;
 
     //console.log(allCategories);
     
@@ -104,12 +177,6 @@ export class AppProvider{
     
     allCategories.forEach((parent:Category,indexParent:number)=>{
       parent.restoreChild();
-      console.log("////////////////////////////////");
-      console.log("Categoria: " + parent._name);
-      console.log("////// Children //////////////")
-      console.log(parent._children);
-      console.log("////// BackUp //////////////////");
-      console.log(parent._backup);
           //console.log("Estoy en: " +parent._name);
             parent._children.forEach((child:Category, indexChild:number)=>{
                 //console.log(parent._name + ' ' + indexChild);
@@ -141,7 +208,9 @@ export class AppProvider{
       //console.log(allCategories);
       //console.log(this._baseCategories);
       //console.log(allCategories);
-      this._filter.next(allCategories);
+      this.dataStorage.filteredCategories = allCategories;
+      console.log(this.dataStorage.categories);
+      this._filteredCategories$.next(this.dataStorage.filteredCategories);
       //console.log(this._filter.getValue());
       
       //console.log(this._filter.value);
@@ -149,7 +218,7 @@ export class AppProvider{
   }
 
   resetAvailableCategories(){
-    this._categories.next(this._baseCategories);
+    //this._categories.next(this._baseCategories);
   }
 
   loadInitialData(){
@@ -169,7 +238,8 @@ export class AppProvider{
           }
         })
       }));
-      this._locations.next(locations);
+      this.dataStorage.locations = locations;
+      this._locations$.next(this.dataStorage.locations);
     })
     this.wpApi.getCategories().subscribe(res => {
       /*res.json().
@@ -212,9 +282,29 @@ export class AppProvider{
                 }
               })
             }));
-            
+            this.dataStorage.categories = categories;
             //this._filter.next(categories);
-            this._categories.next(categories);
+            this._categories$.next(this.dataStorage.categories);
+
+            var filteredCategories:Array<Category> = [];
+         (<Object[]>res.json().map((category: any) =>{
+            if(category.parent == 0)
+            {
+              filteredCategories.push(new Category(category.id, category.description, category.name, category.link, category.category_meta.icon, category.category_meta.marker, category.category_meta.excerpt));
+            }
+            }));
+            (<Object[]>res.json().map((category:any) => {
+              filteredCategories.map((parent:Category) => {
+                if(category.parent != 0 ){
+                  if(parent._id == category.parent){
+                    parent.addChilden(new Category(category.id, category.description, category.name, category.link, category.category_meta.icon, category.category_meta.marker, category.category_meta.excerpt));
+                  }
+                }
+              })
+            }));
+            this.dataStorage.baseCategories = filteredCategories;
+            //this._filter.next(categories);
+            //this._filteredCategories$.next(this.dataStorage.filteredCategories);
       },
       err => console.log("Error retrieving Categories")
     );

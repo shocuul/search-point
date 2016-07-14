@@ -21,7 +21,7 @@
 
 
   <sebm-google-map-marker 
-  *ngFor="let m of appProvider.items | async; let i = index"
+  *ngFor="let m of appProvider.items$ | async; let i = index"
   [latitude]="m._gpsLatitude"
   [longitude]="m._gpsLongitude"
   [iconUrl]="m._marker">

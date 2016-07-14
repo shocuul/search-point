@@ -37,7 +37,7 @@ export class Category extends Post{
 
     restoreChild(){
         this._children = this._backup;
-        console.log(this._children);
+        //console.log(this._children);
 
     }
     
