@@ -24,13 +24,14 @@
 
 <ion-content>
   
-  <ion-card *ngFor="let item of provider.items | async">
+  <ion-card *ngFor="let item of provider.items$ | async" (click)="goToItem(item)">
     <ion-row>
       <ion-col width-20>
         <img src="{{item._image}}">
       </ion-col>
       <ion-col>
         <h2>{{item._name}}</h2>
+        <p>{{item._address}}</p>
       </ion-col>
     </ion-row>
   </ion-card>

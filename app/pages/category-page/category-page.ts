@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import {Category} from '../../providers/wp-api/data-clases';
+import {Category, Item} from '../../providers/wp-api/data-clases';
 import {AppProvider} from '../../providers/wp-api/app-provider';
+import {ItemPage} from '../item/item';
 
 
 /*
@@ -20,6 +21,10 @@ export class CategoryPage {
   constructor(private nav: NavController,private params: NavParams) {
     this.cat = params.get('category');
     this.provider = params.get('app');
+  }
+
+  goToItem(item: Item){
+    this.nav.push(ItemPage,{item:item});
   }
 
   

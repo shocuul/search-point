@@ -30,12 +30,6 @@
     </ion-item>
     </div>
   </ion-list>
-  <ion-list>
-    <ion-item *ngFor="let m of appProvider.categories$ | async">
-      {{m._name}}
-      <div *ngFor="let item of m._children"> {{item._name}} </div>
-    </ion-item>
-  </ion-list>
   <!--<div style="display:flex; flex-wrap: wrap; align-items:stretch;">
     <div *ngFor="let parent of appProvider.categories | async; let i = index" style="flex:0 0 calc(100% / 3 -2px); width:33%;">
       <img src="{{parent._icon}}" style="width:90%;">

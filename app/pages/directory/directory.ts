@@ -30,6 +30,7 @@ export class DirectoryPage implements OnInit {
   }
 
   goToCategory(cat: Category){
+    this.appProvider.filterItems(cat._id);
     this.navController.push(CategoryPage,{category:cat, app:this.appProvider});
   }
 
