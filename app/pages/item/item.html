@@ -7,12 +7,46 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>item</ion-title>
+    <ion-title>{{item._name}}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class="item">
+  <ion-grid>
+    <ion-row>
+      <div [innerHTML]="item._description">
+      </div>
+      </ion-row>
+    <ion-row>
+      <ion-col width-10>
+        <ion-icon name="call"></ion-icon>
+      </ion-col>
+      <ion-col>
+        {{item._telephone}}
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col width-10>
+        <ion-icon name="wifi"></ion-icon>
+      </ion-col>
+      <ion-col>{{item._web}}</ion-col>
+    </ion-row>
+   <ion-row>
+     <ion-col width-10> <ion-icon name="mail"></ion-icon></ion-col>
+   	 <ion-col>{{item._email}}</ion-col>
+   </ion-row>
+   <sebm-google-map
+   [latitude]="item._gpsLatitude"
+   [longitude]="item._gpsLongitude"
+   [zoom]="10">
+   <sebm-google-map-marker
+   [latitude]="item._gpsLatitude"
+   [longitude]="item._gpsLongitude"
+   [iconUrl]="item._marker"></sebm-google-map-marker>
+   </sebm-google-map>
+
+  </ion-grid>
 
 </ion-content>

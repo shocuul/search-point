@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import {Item} from '../../providers/wp-api/data-clases';
+import { GOOGLE_MAPS_DIRECTIVES, GOOGLE_MAPS_PROVIDERS } from 'angular2-google-maps/core';
 
 /*
   Generated class for the ItemPage page.
@@ -10,6 +11,8 @@ import {Item} from '../../providers/wp-api/data-clases';
 */
 @Component({
   templateUrl: 'build/pages/item/item.html',
+  directives:[GOOGLE_MAPS_DIRECTIVES],
+  providers:[GOOGLE_MAPS_PROVIDERS]
 })
 export class ItemPage {
 
