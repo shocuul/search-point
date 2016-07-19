@@ -12,7 +12,12 @@ import { GOOGLE_MAPS_DIRECTIVES, GOOGLE_MAPS_PROVIDERS } from 'angular2-google-m
 @Component({
   templateUrl: 'build/pages/item/item.html',
   directives:[GOOGLE_MAPS_DIRECTIVES],
-  providers:[GOOGLE_MAPS_PROVIDERS]
+  providers:[GOOGLE_MAPS_PROVIDERS],
+  styles:[`
+  .sebm-google-map-container {
+     height: 150px;
+   }
+  `]
 })
 export class ItemPage {
 
