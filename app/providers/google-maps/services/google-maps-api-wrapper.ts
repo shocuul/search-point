@@ -42,5 +42,59 @@ export class GoogleMapsAPIWrapper{
         });
     }
 
+    createInfoWindow(options?: mapTypes.InfoWindowOptions): Promise<mapTypes.InfoWindow>{
+        return this._map.then(() => {return new google.maps.InfoWindow(options);});
+    }
+
+    createCircle(options: mapTypes.CircleOptions): Promise<mapTypes.Circle>{
+        return this._map.then((map: mapTypes.GoogleMap) => {
+            options.map = map;
+            return new google.maps.Circle(options);
+        });
+    }
+
+    subscribeToMapEvent<E>(eventName:string):Observable<E>{
+        return Observable.create((observer:Observer<E>)=>{
+            this._map.then((m: mapTypes.GoogleMap)=>{
+                m.addListener(eventName,(arg:E) => {this._zone.run(() => observer.next(arg));});
+            })
+        })
+    }
+
+    setCenter(latLng:mapTypes.LatLngLiteral):Promise<void>{
+        return this._map.then((map:mapTypes.GoogleMap) => map.setCenter(latLng));
+    }
+
+    getZoom(): Promise<number> { return this._map.then((map: mapTypes.GoogleMap) => map.getZoom());}
+
+    getBounds():Promise<mapTypes.LatLngBounds>{
+        return this._map.then((map:mapTypes.GoogleMap) => map.getBounds());
+    }
+
+    setZoom(zoom:number):Promise<void>{
+        return this._map.then((map: mapTypes.GoogleMap) => map.setZoom(zoom));
+    }
+
+    getCenter():Promise<mapTypes.LatLng>{
+        return this._map.then((map: mapTypes.GoogleMap) => map.getCenter());
+    }
+
+    panTo(latLng:mapTypes.LatLng | mapTypes.LatLngLiteral):Promise<void>{
+        return this._map.then((map) => map.panTo(latLng));
+    }
+
+    fitBounds(latLng: mapTypes.LatLngBounds | mapTypes.LatLngBoundsLiteral):Promise<void>{
+        return this._map.then((map) => map.fitBounds(latLng));
+    }
+
+    panToBounds(latLng:mapTypes.LatLngBounds | mapTypes.LatLngBoundsLiteral):Promise<void>{
+        return this._map.then((map)=> map.panToBounds(latLng));
+    }
+
+    getNativeMap(): Promise<mapTypes.GoogleMap>{ return this._map;}
+
+    triggerMapEvent(eventName: string):Promise<void>{
+        return this._map.then((m) => google.maps.event.trigger(m,eventName));
+    }
     
 }
