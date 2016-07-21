@@ -51,6 +51,7 @@ export class LazyMapsAPILoader extends MapsAPILoader{
             this._config = config || DEFAULT_CONFIGURATION;
             this._window = w;
             this._document = d;
+            
         }
     
     load():Promise<void>{

@@ -18,6 +18,7 @@ declare var google:any;
 export class GoogleMapsAPIWrapper{
     private _map: Promise<mapTypes.GoogleMap>;
     private _mapResolver:(value?:mapTypes.GoogleMap) => void;
+    
 
     constructor(private _loader:MapsAPILoader, private _zone:NgZone){
         this._map = new Promise<mapTypes.GoogleMap>((resolve:() => void) => {this._mapResolver = resolve});
@@ -33,6 +34,10 @@ export class GoogleMapsAPIWrapper{
 
     setMapOptions(options: mapTypes.MapOptions){
         this._map.then((m:mapTypes.GoogleMap) => {m.setOptions(options);});
+    }
+
+    createOverlayView():Promise<mapTypes.OverlayView>{
+        return this._map.then(() => { return new google.mapsOverlayView();});
     }
 
     createMarker(options:mapTypes.MarkerOptions = <mapTypes.MarkerOptions>{}):Promise<mapTypes.Marker>{

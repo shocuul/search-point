@@ -13,7 +13,43 @@ export interface GoogleMap extends MVCObject {
     panToBounds(latLngBounds:LatLngBounds|LatLngBoundsLiteral):void;
     fitBounds(bounds:LatLngBounds|LatLngBoundsLiteral):void;
 }
+// InfoBox.js Implementation
+export interface Point{
+  constructor(x:number, y:number):void;
+  equals(other: Point):boolean;
+  toString():string;
+  x():number;
+  y():number;
 
+}
+
+export interface MapCanvasProjection extends MVCObject{
+  fromContainerPixelToLatLng(pixel: Point, nowrap?:boolean):LatLng;
+  fromDivPixelToLatLng(pixel:Point, nowrap?:boolean):LatLng;
+  fromLatLngToContainerPixel(latLng:LatLng):Point;
+  fromLatLngToDivPixel(latLng:LatLng):Point;
+  getWorldWidth():number;
+}
+
+export interface MapPanes{
+  floatPane:HTMLElement;
+  mapPane: HTMLElement;
+  markerLayer: HTMLElement;
+  overlayLayer:HTMLElement;
+  overlayMouseTarger:Element;
+}
+
+export interface OverlayView extends MVCObject{
+  draw():void;
+  getMap():GoogleMap;
+  getPanes():MapPanes;
+  getProjection():MapCanvasProjection;
+  onAdd():void;
+  onRemove():void;
+  setMap(map:GoogleMap):void;
+
+}
+/////////////////////////////////////////////////
 export interface LatLng {
   constructor(lat: number, lng: number): void;
   lat(): number;
@@ -129,8 +165,6 @@ export interface MapOptions{
 }
 
 export interface MapTypeStyle {
-  elementType: 'all'|'geometry'|'geometry.fill'|'geometry.stroke'|'labels'|'labels.icon'|
-      'labels.text'|'labels.text.fill'|'labels.text.stroke';
   featureType: 'administrative'|'administrative.country'|'administrative.land_parcel'|
       'administrative.locality'|'administrative.neighborhood'|'administrative.province'|'all'|
       'landscape'|'landscape.man_made'|'landscape.natural'|'landscape.natural.landcover'|
@@ -139,6 +173,8 @@ export interface MapTypeStyle {
       'road.arterial'|'road.highway'|'road.highway.controlled_access'|'road.local'|'transit'|
       'transit.line'|'transit.station'|'transit.station.airport'|'transit.station.bus'|
       'transit.station.rail'|'water';
+  elementType?: 'all'|'geometry'|'geometry.fill'|'geometry.stroke'|'labels'|'labels.icon'|
+      'labels.text'|'labels.text.fill'|'labels.text.stroke';
   stylers: MapTypeStyler[];
 }
 

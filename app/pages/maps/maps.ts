@@ -5,16 +5,40 @@ import {AppProvider} from '../../providers/wp-api/app-provider';
 import {Geolocation} from 'ionic-native';
 import {SearchModal} from './search';
 import {FilterPopover} from './filter';
-import { GOOGLE_MAPS_DIRECTIVES, GOOGLE_MAPS_PROVIDERS } from 'angular2-google-maps/core';
+//import { GOOGLE_MAPS_DIRECTIVES, GOOGLE_MAPS_PROVIDERS } from 'angular2-google-maps/core';
+import {DENETHIEL_MAPS_DIRECTIVES, DENETHIEL_MAPS_PROVIDERS} from '../../providers/google-maps'
+import {MapTypeStyle} from '../../providers/google-maps'
 
 @Component({
   templateUrl: 'build/pages/maps/maps.html',
-  directives:[GOOGLE_MAPS_DIRECTIVES],
-  providers:[GOOGLE_MAPS_PROVIDERS, AppProvider]
+  directives:[DENETHIEL_MAPS_DIRECTIVES],
+  providers:[DENETHIEL_MAPS_PROVIDERS, AppProvider]
 })
 export class MapsPage implements OnInit {
   lat: number;
   lng: number;
+  styleArray:MapTypeStyle[] = [
+    {
+      featureType: 'all',
+      stylers: [
+       { saturation: -80 }
+      ]
+    },{
+      featureType: "road.arterial",
+      elementType: "geometry",
+      stylers: [
+        { hue: "#00ffee" },
+        { saturation: 50 }
+      ]
+    },{
+      featureType: "poi.business",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+    }
+  ];
+  
   constructor(private navController: NavController, private appProvider: AppProvider) { }
 
   ngOnInit(){
@@ -22,6 +46,7 @@ export class MapsPage implements OnInit {
   }
 
   loadMap(){
+    
     let loading = Loading.create({
       content:'Cargando Mapa...'
     });
