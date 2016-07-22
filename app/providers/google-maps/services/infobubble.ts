@@ -46,10 +46,40 @@ const DEFAULT_CONFIGURATION = new InfoBubbleOptions();
 export class InfoBubble {
     private _options:InfoBubbleOptions;
     private _document:Document;
+    private _bubble:HTMLElement
+    private _tabsContainer:HTMLElement;
+    private _tabs:any[] = [];
+    private _activeTab = null;
+    private _baseZIndex = 100;
+    private _isOpen = false;
+
+    private _close:HTMLElement;
     constructor(
         @Optional() options:InfoBubbleOptions,
         @Inject(DOCUMENT_GLOBAL) d:Document){
             this._options = options || DEFAULT_CONFIGURATION;
             this._document = d;
         }
+
+    private _buildDom(){
+        var bubble = this._bubble = this._document.createElement('div');
+        bubble.style['position'] = 'absolute';
+        bubble.style['zIndex'] = this._baseZIndex.toString();
+
+        var tabsContainer = this._tabsContainer = this._document.createElement('div');
+        tabsContainer.style.position = 'relative';
+
+        var close = this._close = this._document.createElement('img');
+        close.style.position = 'absolute';
+        close.style.border = '0';
+        close.style.zIndex = (this._baseZIndex + 1).toString();
+        close.style.cursor = 'pointer';
+        close.src = this._options.closeSrc;
+
+        //* CLOSE EVENT LISTENER
+
+
+
+
+    }
 }

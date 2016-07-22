@@ -49,6 +49,7 @@ export interface OverlayView extends MVCObject{
   setMap(map:GoogleMap):void;
 
 }
+
 /////////////////////////////////////////////////
 export interface LatLng {
   constructor(lat: number, lng: number): void;

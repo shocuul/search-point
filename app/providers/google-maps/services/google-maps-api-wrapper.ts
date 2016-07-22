@@ -7,6 +7,8 @@ import {Observer} from 'rxjs/Observer';
 import * as mapTypes from './google-maps-types';
 import {MapsAPILoader} from './api-loader/maps-api-loader';
 
+//import {DenethielOverlay} from '../directives/google-overlay';
+
 declare var google:any;
 
 /**
@@ -31,6 +33,7 @@ export class GoogleMapsAPIWrapper{
             return;
         });
     }
+    
 
     setMapOptions(options: mapTypes.MapOptions){
         this._map.then((m:mapTypes.GoogleMap) => {m.setOptions(options);});
@@ -56,6 +59,14 @@ export class GoogleMapsAPIWrapper{
             options.map = map;
             return new google.maps.Circle(options);
         });
+    }
+
+    createLatLng(lat:number, lng:number):Promise<mapTypes.LatLng>{
+        return this._map.then(() =>{return new google.maps.LatLng(lat,lng);})
+    }
+
+    createLatLngBounds(x:mapTypes.LatLngLiteral,y:mapTypes.LatLngLiteral):Promise<mapTypes.LatLngBounds>{
+        return this._map.then(() => {return new google.maps.LatLngBounds(new google.maps.LatLng(x.lat,x.lng), new google.maps.LatLng(y.lat,y.lng));})
     }
 
     subscribeToMapEvent<E>(eventName:string):Observable<E>{
@@ -101,5 +112,7 @@ export class GoogleMapsAPIWrapper{
     triggerMapEvent(eventName: string):Promise<void>{
         return this._map.then((m) => google.maps.event.trigger(m,eventName));
     }
+
+    
     
 }
