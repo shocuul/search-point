@@ -14,13 +14,21 @@
 
 <ion-content class="maps">
 <denethiel-google-map 
-  [latitude]="lat" 
-  [longitude]="lng"
-  [zoom]="15"
+  [latitude]="latitude" 
+  [longitude]="longitude"
+  [zoom]="11"
   [disableDefaultUI]="false"
   [styles]="styleArray">
+  
+  <denethiel-overlay
+  [image]="https://developers.google.com/maps/documentation/javascript/examples/full/images/talkeetna.png"
+  [south]="south"
+  [west]="west"
+  [north]="north"
+  [east]="east">
+  </denethiel-overlay>
 
-
+  <!--
   <denethiel-google-map-marker 
   *ngFor="let m of appProvider.items$ | async; let i = index"
   [latitude]="m._gpsLatitude"
@@ -37,6 +45,6 @@
     </ion-card>
   </denethiel-google-map-info-window>
 
-  </denethiel-google-map-marker>
+  </denethiel-google-map-marker> -->
 	</denethiel-google-map>
 </ion-content>

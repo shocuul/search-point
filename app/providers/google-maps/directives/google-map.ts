@@ -8,10 +8,11 @@ import {LatLng, LatLngLiteral} from '../services/google-maps-types';
 import {LatLngBounds, LatLngBoundsLiteral, MapTypeStyle} from '../services/google-maps-types';
 import {InfoWindowManager} from '../services/managers/info-window-manager';
 import {MarkerManager} from '../services/managers/marker-manager';
+import {OverlayViewManager} from '../services/managers/overlay-view-manager';
 
 @Component({
     selector:'denethiel-google-map',
-    providers:[GoogleMapsAPIWrapper, MarkerManager, InfoWindowManager],
+    providers:[GoogleMapsAPIWrapper, MarkerManager, InfoWindowManager,OverlayViewManager],
     inputs:[
         'longitude','latitude','zoom','disableDoubleClickZoom', 'disableDefaultUI', 'scrollwheel',
     'backgroundColor', 'draggableCursor', 'draggingCursor', 'keyboardShortcuts', 'zoomControl',

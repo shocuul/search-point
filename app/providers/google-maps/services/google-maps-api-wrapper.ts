@@ -43,6 +43,16 @@ export class GoogleMapsAPIWrapper{
         return this._map.then(() => { return new google.mapsOverlayView();});
     }
 
+    createBubble(options:mapTypes.TestOverlay):Promise<mapTypes.OverlayView>{
+        return this._map.then((map: mapTypes.GoogleMap) => {
+            var overlay = new mapTypes.InfoBubbleTS(options, google);
+            var view = overlay.getOverlay();
+            view.setMap(map);
+            return view;
+        })
+
+    }
+
     createMarker(options:mapTypes.MarkerOptions = <mapTypes.MarkerOptions>{}):Promise<mapTypes.Marker>{
         return this._map.then((map:mapTypes.GoogleMap) => {
             options.map = map;

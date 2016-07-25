@@ -6,41 +6,61 @@ import {MouseEvent} from '../map-types';
 
 import * as MapTypes from '../services/google-maps-types';
 
-import {GoogleMapsAPIWrapper} from '../services/google-maps-api-wrapper';
+import {OverlayViewManager} from '../services/managers/overlay-view-manager';
+
+let OverlayId = 1;
 
 @Component({
     selector:'denethiel-overlay',
-    inputs:['image'],
+    inputs:['image','east','north','south','west'],
     template:`
     <div class="denethiel-overlay-content">
         <ng-content></ng-content>
     </div>
     `
 })
-export class DenethielOverlay implements OnDestroy, OnChanges{
+export class DenethielOverlay implements OnDestroy, OnChanges, AfterContentInit{
     image:string;
-    overlay:MapTypes.OverlayView;
-    bounds:MapTypes.LatLngBounds;
-    constructor(private _wrapper:GoogleMapsAPIWrapper){
-        var x:MapTypes.LatLngLiteral = {lat:62.281819,lng:-150.287132}
-        var y:MapTypes.LatLngLiteral = {lat:62.400471,lng:-150.005608}
+    east:number;
+    north:number;
+    south:number;
+    west:number;
 
-        this._wrapper.createLatLngBounds(x,y).then((bounds:MapTypes.LatLngBounds) =>{
-            this.bounds = bounds;
-        });
-        this._wrapper.createOverlayView().then((overlay:MapTypes.OverlayView)=>{
-            this.overlay = overlay;
-        });
-        this._wrapper.getNativeMap().then((map:MapTypes.GoogleMap)=>{
-            this.overlay.setMap(map);
-        })
-        this.buildDom();
+    private _overlayaddedToManager:boolean = false;
+    private _id:string;
+    constructor(private _overlayViewManager: OverlayViewManager){
+        this._id = (OverlayId++).toString();
+        console.log(this.image);
     }
-    buildDom();
+    ngAfterContentInit(){
+        console.log("OverlayIniciado");
+    }
 
-    ngOnChanges(changes:{[key:string]:SimpleChange}){}
+    ngOnChanges(changes: {[key:string]:SimpleChange}){
+        
+        if(typeof this.east !== 'number' || typeof this.north !== 'number' || typeof this.south !== 'number' || typeof this.west !== 'number' || typeof this.image !== 'string'){
+            return;
+        }
 
-    ngOnDestroy(){}
+        if(!this._overlayaddedToManager){
+            this._overlayViewManager.addOverlayView(this);
+            this._overlayaddedToManager = true;
+            return;
+        }
+    }
+
+    private _addEventListener(){
+
+    }
+
+
+    ngOnDestroy(){
+        this._overlayViewManager.deleteOverlayView(this);
+    }
+
+    id(): string{return this._id}
+
+    toString():string { return 'DenethielOverlay-' + this._id.toString(); }
     
 }
 

@@ -16,6 +16,12 @@ import {MapTypeStyle} from '../../providers/google-maps'
 })
 export class MapsPage implements OnInit {
   lat: number;
+  latitude:number = 62.323907;
+  longitude:number = -150.109291;
+  south:number = 62.281819;
+  west:number = -150.287132;
+  north:number = 62.400471;
+  east:number = -150.005608;
   lng: number;
   styleArray:MapTypeStyle[] = [
     {
