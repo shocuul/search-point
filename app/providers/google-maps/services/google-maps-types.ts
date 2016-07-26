@@ -40,6 +40,7 @@ export interface MapPanes{
 }
 
 export interface OverlayView extends MVCObject{
+  constructor():void;
   draw():void;
   getMap():GoogleMap;
   getPanes():MapPanes;
@@ -241,7 +242,7 @@ export interface BubbleOptions {
   backgroundClassName?:string;
   arrowStyle?:number;
 }
-
+/** 
 export class InfoBubbleConstructor{
   infobubble:any;
   constructor(options:any,google:any){
@@ -252,6 +253,8 @@ export class InfoBubbleConstructor{
   }
 
 }
+
+*/
 
 class Utils {
   public static CopyProperties(source:OverlayView, target:InfoBubbleTS):void{
@@ -274,17 +277,15 @@ export class InfoBubbleTS{
   _bounds:LatLngBounds;
   _image:string;
   _div:HTMLElement = null;
-  overlay:OverlayView;
+  overlay:any;
   constructor(options:TestOverlay,google:any){
     console.log("estoy en el constructor");
     this.overlay = google.maps.OverlayView();
     this._bounds = new google.maps.LatLngBounds(new google.maps.LatLng(options.bounds.south,options.bounds.west),new google.maps.LatLng(options.bounds.north,options.bounds.east));
-    this.build();
-}
-
-  build(){
-    var self = this;
-    this.overlay.onAdd = () => {
+    
+    this.overlay.draw = () => {
+      var self = this;
+      if(!div){
       var div = this._div = document.createElement('div');
       div.style.borderStyle = 'none';
       div.style.borderWidth = '0px';
@@ -296,28 +297,31 @@ export class InfoBubbleTS{
       img.style.height = '100%';
       img.style.position = 'absolute';
       div.appendChild(img);
-
+      }
       var panes = this.overlay.getPanes();
       panes.overlayLayer.appendChild(div);
-    }
+    
 
-    this.overlay.draw = () => {
+    
       var overlayProjection = this.overlay.getProjection();
 
       var sw = overlayProjection.fromLatLngToDivPixel(this._bounds.getSouthWest());
       var ne = overlayProjection.fromLatLngToDivPixel(this._bounds.getNorthEast());
 
-      var div = this._div;
       div.style.left = sw.x + 'px';
       div.style.top = ne.y + 'px';
-      div.style.width = '200px';
-      div.style.height = '200px';
+      div.style.width = '1000px';
+      div.style.height = '1000px';
     }
 
     this.overlay.onRemove = () => {
       this._div.parentNode.removeChild(this._div);
       this._div = null;
     }
+}
+
+  build(){
+    
   }
   getOverlay(){
     return this.overlay;

@@ -38,9 +38,9 @@ export class DenethielOverlay implements OnDestroy, OnChanges, AfterContentInit{
 
     ngOnChanges(changes: {[key:string]:SimpleChange}){
         
-        if(typeof this.east !== 'number' || typeof this.north !== 'number' || typeof this.south !== 'number' || typeof this.west !== 'number' || typeof this.image !== 'string'){
-            return;
-        }
+        //if(typeof this.east !== 'number' || typeof this.north !== 'number' || typeof this.south !== 'number' || typeof this.west !== 'number' || typeof this.image !== 'string'){
+          //  return;
+        //}
 
         if(!this._overlayaddedToManager){
             this._overlayViewManager.addOverlayView(this);

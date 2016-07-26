@@ -22,6 +22,7 @@ export class MapsPage implements OnInit {
   west:number = -150.287132;
   north:number = 62.400471;
   east:number = -150.005608;
+  image:string = "https://developers.google.com/maps/documentation/javascript/examples/full/images/talkeetna.png";
   lng: number;
   styleArray:MapTypeStyle[] = [
     {

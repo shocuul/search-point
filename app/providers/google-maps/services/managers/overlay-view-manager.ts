@@ -42,7 +42,7 @@ export class OverlayViewManager{
     getNativeOverlayView(overlayView: DenethielOverlay): Promise<OverlayView>{
         return this._overlayViews.get(overlayView);
     }
-
+    /** 
     createEventObservable<T>(eventName: string, overlay: DenethielOverlay):Observable<T>{
         return Observable.create((observer: Observer<T>) =>{
             this._overlayViews.get(overlay).then((m:OverlayView)=>{
@@ -50,5 +50,6 @@ export class OverlayViewManager{
             })
         })
     }
+    */
 
 }
