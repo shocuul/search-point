@@ -43,11 +43,19 @@ export class GoogleMapsAPIWrapper{
         return this._map.then(() => { return new google.mapsOverlayView();});
     }
 
+    createInfoBubble(options:any):Promise<mapTypes.InfoBubble>{
+        return this._map.then((map:mapTypes.GoogleMap) => {
+            var generator = new mapTypes.InfoBubbleGenerator(options, google);
+            var infobubble = generator.getInfoBubble();
+            return infobubble;
+        })
+    }
+
     createBubble(options:mapTypes.TestOverlay):Promise<mapTypes.OverlayView>{
         return this._map.then((map: mapTypes.GoogleMap) => {
+            options.map = map;
             var overlay = new mapTypes.InfoBubbleTS(options, google);
             var view = overlay.getOverlay();
-            view.setMap(map);
             return view;
         })
 

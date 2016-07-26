@@ -6,7 +6,7 @@ import {Geolocation} from 'ionic-native';
 import {SearchModal} from './search';
 import {FilterPopover} from './filter';
 //import { GOOGLE_MAPS_DIRECTIVES, GOOGLE_MAPS_PROVIDERS } from 'angular2-google-maps/core';
-import {DENETHIEL_MAPS_DIRECTIVES, DENETHIEL_MAPS_PROVIDERS} from '../../providers/google-maps'
+import {DENETHIEL_MAPS_DIRECTIVES, DENETHIEL_MAPS_PROVIDERS, DenethielOverlay} from '../../providers/google-maps'
 import {MapTypeStyle} from '../../providers/google-maps'
 
 @Component({
@@ -24,6 +24,7 @@ export class MapsPage implements OnInit {
   east:number = -150.005608;
   image:string = "https://developers.google.com/maps/documentation/javascript/examples/full/images/talkeetna.png";
   lng: number;
+  overlay:DenethielOverlay;
   styleArray:MapTypeStyle[] = [
     {
       featureType: 'all',
@@ -52,6 +53,8 @@ export class MapsPage implements OnInit {
      this.loadMap();
   }
 
+
+
   loadMap(){
     
     let loading = Loading.create({
@@ -74,7 +77,10 @@ export class MapsPage implements OnInit {
   }
 
   showModal(){
+    this.overlay.toggle();
+    /*
     let modal = Modal.create(SearchModal)
     this.navController.present(modal);
+    */
   }
 }

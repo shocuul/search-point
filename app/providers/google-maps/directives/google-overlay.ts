@@ -8,11 +8,14 @@ import * as MapTypes from '../services/google-maps-types';
 
 import {OverlayViewManager} from '../services/managers/overlay-view-manager';
 
+import {TimerWrapper} from '@angular/core/src/facade/async';
+
 let OverlayId = 1;
 
 @Component({
     selector:'denethiel-overlay',
     inputs:['image','east','north','south','west'],
+    outputs:['overlayToggle'],
     template:`
     <div class="denethiel-overlay-content">
         <ng-content></ng-content>
@@ -25,15 +28,16 @@ export class DenethielOverlay implements OnDestroy, OnChanges, AfterContentInit{
     north:number;
     south:number;
     west:number;
+    test:HTMLElement;
+    overlayToggle: EventEmitter<void> = new EventEmitter<void>();
 
     private _overlayaddedToManager:boolean = false;
     private _id:string;
     constructor(private _overlayViewManager: OverlayViewManager){
         this._id = (OverlayId++).toString();
-        console.log(this.image);
     }
     ngAfterContentInit(){
-        console.log("OverlayIniciado");
+        
     }
 
     ngOnChanges(changes: {[key:string]:SimpleChange}){
@@ -62,6 +66,9 @@ export class DenethielOverlay implements OnDestroy, OnChanges, AfterContentInit{
 
     toString():string { return 'DenethielOverlay-' + this._id.toString(); }
     
+    toggle():Promise<void>{
+        return this._overlayViewManager.toggle(this).then(() => {this.overlayToggle.emit(void 0);})
+    }
 }
 
 
