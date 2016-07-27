@@ -28,7 +28,7 @@ export class OverlayViewManager{
     }
 
     addOverlayView(overlayView: DenethielOverlay){
-        console.log("Estoy agregando un overlayView");
+        //console.log("Estoy agregando un overlayView");
         var bounds = {
             east: overlayView.east,
             north: overlayView.north,
@@ -37,7 +37,7 @@ export class OverlayViewManager{
             }
         //console.log(bounds);
         const overlayViewPromise = this._mapsWrapper.createBubble({bounds: bounds, image: overlayView.image});
-        this._overlayViews.set(overlayView, overlayViewPromise);
+        //this._overlayViews.set(overlayView, overlayViewPromise);
     }
 
     getNativeOverlayView(overlayView: DenethielOverlay): Promise<InfoBubble>{

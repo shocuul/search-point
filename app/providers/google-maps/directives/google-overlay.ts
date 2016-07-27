@@ -65,10 +65,11 @@ export class DenethielOverlay implements OnDestroy, OnChanges, AfterContentInit{
     id(): string{return this._id}
 
     toString():string { return 'DenethielOverlay-' + this._id.toString(); }
-    
+    /*
     toggle():Promise<void>{
         return this._overlayViewManager.toggle(this).then(() => {this.overlayToggle.emit(void 0);})
     }
+    */
 }
 
 

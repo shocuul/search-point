@@ -28,21 +28,57 @@ export class MapsPage implements OnInit {
   styleArray:MapTypeStyle[] = [
     {
       featureType: 'all',
+      elementType: 'all',
       stylers: [
-       { saturation: -80 }
+        {invert_lightness:true},
+       { saturation: 20 },
+       { lightness: 50},
+       { gamma: 0.4},
+       { hue: "#00ffee"}
       ]
     },{
-      featureType: "road.arterial",
+      featureType: "all",
       elementType: "geometry",
       stylers: [
-        { hue: "#00ffee" },
-        { saturation: 50 }
+        { visibility: "simplified" }
       ]
     },{
-      featureType: "poi.business",
+      featureType: "all",
       elementType: "labels",
       stylers: [
-        { visibility: "off" }
+        { visibility: "on" }
+      ]
+    },{
+      featureType: "administrative",
+      elementType: "all",
+      stylers:[{
+        color: "#ffffff"
+      },{
+        visibility: "simplified"
+      }]
+    },{
+      featureType: "administrative.land_parcel",
+      elementType: "geometry.stroke",
+      stylers:[
+        {
+          visibility: "simplified"
+        }
+      ]
+    },{
+      featureType: "landscape",
+      elementType: "all",
+      stylers:[
+        {
+          color:"#405769"
+        }
+      ]
+    },{
+      featureType: "water",
+      elementType: "geometry.fill",
+      stylers:[
+        {
+          color: "#232f3a"
+        }
       ]
     }
   ];
@@ -77,10 +113,10 @@ export class MapsPage implements OnInit {
   }
 
   showModal(){
-    this.overlay.toggle();
-    /*
+    //this.overlay.toggle();
+    
     let modal = Modal.create(SearchModal)
     this.navController.present(modal);
-    */
+    
   }
 }
