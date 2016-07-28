@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
-
+import {MarkerManager} from './marker-manager';
 
 import {DenethielOverlay} from '../../directives/google-overlay';
 import {GoogleMapsAPIWrapper} from '../google-maps-api-wrapper';
@@ -11,7 +11,7 @@ import {OverlayView, InfoBubble, GoogleMap} from '../google-maps-types';
 export class OverlayViewManager{
     private _overlayViews: Map<DenethielOverlay, Promise<InfoBubble>> = new Map<DenethielOverlay, Promise<InfoBubble>>();
 
-    constructor(private _mapsWrapper: GoogleMapsAPIWrapper, private _zone: NgZone){}
+    constructor(private _mapsWrapper: GoogleMapsAPIWrapper, private _zone: NgZone, private _markerManager: MarkerManager){}
 
     deleteOverlayView(overlayView: DenethielOverlay):Promise<void>{
         const m = this._overlayViews.get(overlayView);
@@ -29,19 +29,30 @@ export class OverlayViewManager{
 
     addOverlayView(overlayView: DenethielOverlay){
         //console.log("Estoy agregando un overlayView");
-        var bounds = {
-            east: overlayView.east,
-            north: overlayView.north,
-            south: overlayView.south,
-            west: overlayView.west
-            }
+        overlayView.options['content'] = overlayView.content;
+        console.log(overlayView.options);
         //console.log(bounds);
-        const overlayViewPromise = this._mapsWrapper.createBubble({bounds: bounds, image: overlayView.image});
-        //this._overlayViews.set(overlayView, overlayViewPromise);
+        const overlayViewPromise = this._mapsWrapper.createInfoBubble({options: overlayView.options});
+        this._overlayViews.set(overlayView, overlayViewPromise);
     }
 
     getNativeOverlayView(overlayView: DenethielOverlay): Promise<InfoBubble>{
         return this._overlayViews.get(overlayView);
+    }
+
+    open(overlayView: DenethielOverlay):Promise<void>{
+        return this._overlayViews.get(overlayView).then((v) => {
+            if(overlayView.hostMarker != null){
+                return this._markerManager.getNativeMarker(overlayView.hostMarker).then((marker) => {
+                    return this._mapsWrapper.getNativeMap().then((map) => v.open(map,marker));
+                })
+            }
+            return this._mapsWrapper.getNativeMap().then((map) => v.open(map));
+        })
+    }
+
+    close(overlayView: DenethielOverlay):Promise<void>{
+        return this._overlayViews.get(overlayView).then((v) => v.close());
     }
 
     /*

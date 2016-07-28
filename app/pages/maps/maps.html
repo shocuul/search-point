@@ -19,23 +19,17 @@
   [zoom]="14"
   [disableDefaultUI]="false"
   [styles]="styleArray">
-  <!--
-  <denethiel-overlay
-  [image]="image"
-  [south]="south"
-  [west]="west"
-  [north]="north"
-  [east]="east" #overlay>
-  </denethiel-overlay>
 
-  <!--
+  
+
   <denethiel-google-map-marker 
   *ngFor="let m of appProvider.items$ | async; let i = index"
   [latitude]="m._gpsLatitude"
   [longitude]="m._gpsLongitude"
   [iconUrl]="m._marker">
-  <denethiel-google-map-info-window>
-    <ion-card>
+  <denethiel-overlay
+  [options]="bubbleOptions">
+  <ion-card>
       <ion-card-header>
         Header
       </ion-card-header>
@@ -43,8 +37,8 @@
         The British use the term "header", but the American term "head-shot" the English simply refuse to adopt.
       </ion-card-content>
     </ion-card>
-  </denethiel-google-map-info-window>
+  </denethiel-overlay>
 
-  </denethiel-google-map-marker> -->
+  </denethiel-google-map-marker>
 	</denethiel-google-map>
 </ion-content>

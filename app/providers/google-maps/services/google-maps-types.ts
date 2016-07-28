@@ -455,7 +455,7 @@ export interface InfoBubble extends MVCObject{
   onAdd():void;
   onRemove():void;
   setMap(map:GoogleMap):void;
-  open(map:GoogleMap,marker:Marker):void;
+  open(map?:GoogleMap,marker?:Marker):void;
   close():void;
 }
 
@@ -520,7 +520,7 @@ function InfoBubble(opt_options, google:any) {
   this.buildDom_();
   this.setValues(options);
 }
-window['InfoBubble'] = InfoBubble;
+//window['InfoBubble'] = InfoBubble;
 
 InfoBubble.prototype.ARROW_SIZE_ = 15;
 
@@ -544,16 +544,16 @@ InfoBubble.prototype.BACKGROUND_COLOR_ = '#fff';
 
 InfoBubble.prototype.CLOSE_SRC_ = 'https://maps.gstatic.com/intl/en_us/mapfiles/iw_close.gif';
 
-InfoBubble.prototype.extend = (obj1, obj2) => {
-  return (function(object){
-    for (var property in object.prototype){
+InfoBubble.prototype.extend = function(obj1, obj2) {
+  return (function(object) {
+    for (var property in object.prototype) {
       this.prototype[property] = object.prototype[property];
     }
     return this;
-  }).apply(obj1,[obj2]);
-}
+  }).apply(obj1, [obj2]);
+};
 
-InfoBubble.prototype.buildDom_ = () => {
+InfoBubble.prototype.buildDom_ = function() {
   var bubble = this.bubble_ = document.createElement('div');
   bubble.style['position'] = 'absolute';
   bubble.style['zIndex'] = this.baseZIndex_;

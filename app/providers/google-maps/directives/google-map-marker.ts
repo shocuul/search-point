@@ -8,6 +8,7 @@ import {MarkerManager} from '../services/managers/marker-manager';
 
 import {DenethielGoogleMapInfoWindow} from './google-map-info-window';
 
+import {DenethielOverlay} from './google-overlay';
 let markerId = 0;
 
 @Directive({
@@ -26,10 +27,12 @@ export class DenethielGoogleMapMarker implements OnDestroy, OnChanges, AfterCont
     draggable: boolean = false;
     iconUrl : string;
     openInfoWindow: boolean = true;
+    openBubble:boolean = true;
     markerClick : EventEmitter<void> = new EventEmitter<void>();
     dragEnd: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
 
     @ContentChild(DenethielGoogleMapInfoWindow) private _infoWindow : DenethielGoogleMapInfoWindow;
+    @ContentChild(DenethielOverlay) private _bubble : DenethielOverlay;
 
     private _markerAddToManger : boolean = false;
     private _id : string;
@@ -74,6 +77,10 @@ export class DenethielGoogleMapMarker implements OnDestroy, OnChanges, AfterCont
         const cs = this._markerManager.createEventObservable('click',this).subscribe(() => {
             if(this.openInfoWindow && this._infoWindow != null){
                 this._infoWindow.open();
+            }
+            if(this.openBubble && this._bubble != null){
+                console.log("Abrir burbuja");
+                this._bubble.open();
             }
             this.markerClick.emit(null);
         });

@@ -47,6 +47,8 @@ export class GoogleMapsAPIWrapper{
         return this._map.then((map:mapTypes.GoogleMap) => {
             var generator = new mapTypes.InfoBubbleGenerator(options, google);
             var infobubble = generator.getInfoBubble();
+            console.log("Creando infobubble");
+            console.log(infobubble);
             return infobubble;
         })
     }

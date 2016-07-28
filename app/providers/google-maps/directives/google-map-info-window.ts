@@ -36,7 +36,7 @@ export class DenethielGoogleMapInfoWindow implements OnDestroy, OnChanges{
     constructor(private _infoWindowManager: InfoWindowManager, private _el: ElementRef){}
 
     ngOnInit(){
-        this.content = this._el.nativeElement.querySelector('denethiel-google-map-info-window-content');
+        this.content = this._el.nativeElement.querySelector('.denethiel-google-map-info-window-content');
         this._infoWindowManager.addInfoWindow(this);
         this._infoWindowAddedToManager = true;
         this._updateOpenState();
