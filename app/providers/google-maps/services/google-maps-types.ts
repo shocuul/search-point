@@ -520,6 +520,18 @@ function InfoBubble(opt_options, google:any) {
   this.buildDom_();
   this.setValues(options);
 }
+
+InfoBubble.prototype.setValues = function(values){
+  this.options = values;
+}
+
+InfoBubble.prototype.set = function (name, value){
+  this.options[name] = value;
+}
+
+InfoBubble.prototype.get = function (name){
+  return this.options[name];
+}
 //window['InfoBubble'] = InfoBubble;
 
 InfoBubble.prototype.ARROW_SIZE_ = 15;
@@ -552,6 +564,7 @@ InfoBubble.prototype.extend = function(obj1, obj2) {
     return this;
   }).apply(obj1, [obj2]);
 };
+
 
 InfoBubble.prototype.buildDom_ = function() {
   var bubble = this.bubble_ = document.createElement('div');
@@ -629,6 +642,7 @@ InfoBubble.prototype.buildDom_ = function() {
   document.getElementsByTagName('name')[0].appendChild(stylesheet);
   
 }
+
 
 InfoBubble.prototype.setBackgroundClassName = (className) =>{
   this.set('backgroundClassName',className);

@@ -33,6 +33,7 @@ export class OverlayViewManager{
         console.log(overlayView.options);
         //console.log(bounds);
         const overlayViewPromise = this._mapsWrapper.createInfoBubble({options: overlayView.options});
+        console.log(overlayViewPromise);
         this._overlayViews.set(overlayView, overlayViewPromise);
     }
 
