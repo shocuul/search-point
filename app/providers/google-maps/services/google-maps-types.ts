@@ -532,7 +532,7 @@ InfoBubble.prototype.set = function (name, value){
 InfoBubble.prototype.get = function (name){
   return this.options[name];
 }
-//window['InfoBubble'] = InfoBubble;
+window['InfoBubble'] = InfoBubble;
 
 InfoBubble.prototype.ARROW_SIZE_ = 15;
 
@@ -567,6 +567,7 @@ InfoBubble.prototype.extend = function(obj1, obj2) {
 
 
 InfoBubble.prototype.buildDom_ = function() {
+  console.log("Enter to build dom");
   var bubble = this.bubble_ = document.createElement('div');
   bubble.style['position'] = 'absolute';
   bubble.style['zIndex'] = this.baseZIndex_;
@@ -626,6 +627,8 @@ InfoBubble.prototype.buildDom_ = function() {
   arrow.appendChild(arrowInner);
   bubble.appendChild(arrow);
 
+  console.log(bubble);
+
   var stylesheet = document.createElement('style');
   stylesheet.setAttribute('type','text/css');
 
@@ -644,66 +647,66 @@ InfoBubble.prototype.buildDom_ = function() {
 }
 
 
-InfoBubble.prototype.setBackgroundClassName = (className) =>{
+InfoBubble.prototype.setBackgroundClassName = function(className){
   this.set('backgroundClassName',className);
 };
 
 InfoBubble.prototype['setBackgroundClassName'] = InfoBubble.prototype.setBackgroundClassName;
 
-InfoBubble.prototype.backgroundClassName_changed = () => {
+InfoBubble.prototype.backgroundClassName_changed = function() {
   this.content_.className = this.get('backgroundClassName');
 }
 
 InfoBubble.prototype['backgroundClassName_changed'] = InfoBubble.prototype.backgroundClassName_changed;
 
-InfoBubble.prototype.setTabClassName = (className) => {
+InfoBubble.prototype.setTabClassName = function(className){
   this.set('tabClassName', className);
 };
 InfoBubble.prototype['setTabClassName'] = InfoBubble.prototype.setTabClassName;
 
-InfoBubble.prototype.tabClassName_changed = () => {
+InfoBubble.prototype.tabClassName_changed = function() {
   this.updateTabStyles_();
 };
 InfoBubble.prototype['tabClassName_changed'] = InfoBubble.prototype.tabClassName_changed;
 
-InfoBubble.prototype.getArrowStyle_ = () =>{
+InfoBubble.prototype.getArrowStyle_ = function(){
   return parseInt(this.get('arrowStyle'),10) || 0;
 };
 
-InfoBubble.prototype.setArrowStyle = (style) =>{
+InfoBubble.prototype.setArrowStyle = function(style){
   this.set('arrowStyle',style);
 };
 InfoBubble.prototype['setArrowStyle'] = InfoBubble.prototype.setArrowStyle;
 
-InfoBubble.prototype.arrowStyle_changed = () => {
+InfoBubble.prototype.arrowStyle_changed = function() {
   this.arrowSize_changed();
 }
 InfoBubble.prototype['arrowStyle_changed'] = InfoBubble.prototype.arrowStyle_changed;
 
-InfoBubble.prototype.getArrowSize_ = () => {
+InfoBubble.prototype.getArrowSize_ = function() {
   return parseInt(this.get('arrowSize'),10) || 0;
 }
 
-InfoBubble.prototype.setArrowSize = (size) => {
+InfoBubble.prototype.setArrowSize = function(size) {
   this.set('arrowSize',size);
 }
 InfoBubble.prototype['setArrowSize'] = InfoBubble.prototype.setArrowSize;
 
-InfoBubble.prototype.arrowSize_changed = () => {
+InfoBubble.prototype.arrowSize_changed = function(){
   this.borderWidth_changed();
 };
 InfoBubble.prototype['arrowSize_changed'] = InfoBubble.prototype.arrowSize_changed;
 
-InfoBubble.prototype.setArrowPosition = (pos) => {
+InfoBubble.prototype.setArrowPosition = function(pos) {
   this.set('arrowPosition',pos);
 };
 InfoBubble.prototype['setArrowPosition'] = InfoBubble.prototype.setArrowPosition;
 
-InfoBubble.prototype.getArrowPosition_ = () => {
+InfoBubble.prototype.getArrowPosition_ = function() {
   return parseInt(this.get('arrowPosition'),10) || 0;
 };
 
-InfoBubble.prototype.arrowPosition_changed = () => {
+InfoBubble.prototype.arrowPosition_changed = function() {
   var pos = this.getArrowPosition_();
   this.arrowOuter_.style['left'] = this.arrowInner_.style['left'] = pos + '%';
 
@@ -711,16 +714,16 @@ InfoBubble.prototype.arrowPosition_changed = () => {
 };
 InfoBubble.prototype['arrowPosition_changed'] = InfoBubble.prototype.arrowPosition_changed;
 
-InfoBubble.prototype.setZIndex = (zIndex) => {
+InfoBubble.prototype.setZIndex = function(zIndex) {
   this.set('zIndex',zIndex);
 };
 InfoBubble.prototype['zIndex'] = InfoBubble.prototype.setZIndex;
 
-InfoBubble.prototype.getZIndex = () => {
+InfoBubble.prototype.getZIndex = function() {
   return parseInt(this.get('zIndex'),10) || this.baseZIndex_;
 }
 
-InfoBubble.prototype.zIndex_changed = () => {
+InfoBubble.prototype.zIndex_changed = function() {
   var zIndex = this.getZIndex();
 
   this.bubble_.style['zIndex'] = this.baseZIndex_ = zIndex;
