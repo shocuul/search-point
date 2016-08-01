@@ -468,10 +468,12 @@ function InfoBubble(opt_options, google:any) {
   var options = opt_options || {}; 
   if (options['backgroundColor'] == undefined) {
     options['backgroundColor'] = this.BACKGROUND_COLOR_;
+    
   }
 
   if (options['borderColor'] == undefined) {
     options['borderColor'] = this.BORDER_COLOR_;
+    
   }
 
   if (options['borderRadius'] == undefined) {
@@ -517,12 +519,17 @@ function InfoBubble(opt_options, google:any) {
   if (options['closeSrc'] == undefined) {
     options['closeSrc'] = this.CLOSE_SRC_;
   }
-  this.buildDom_();
+  console.log(options);
   this.setValues(options);
+  this.buildDom_();
+  
+  
 }
 
 InfoBubble.prototype.setValues = function(values){
+  console.log(values);
   this.options = values;
+  console.log(this.options);
 }
 
 InfoBubble.prototype.set = function (name, value){
