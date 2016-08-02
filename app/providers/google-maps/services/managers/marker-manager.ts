@@ -55,7 +55,7 @@ export class MarkerManager{
             draggable: marker.draggable,
             icon: marker.iconUrl
         });
-        console.log(markerPromise);
+        //console.log(markerPromise);
         this._markers.set(marker, markerPromise);
     }
 

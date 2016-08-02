@@ -207,7 +207,13 @@ export interface InfoWindow {
   setZIndex(zIndex: number): void;
 }
 
-export interface MVCObject { addListener(eventName:string, handler:Function): MapsEventListener;}
+export interface MVCObject { 
+  addListener(eventName:string, handler:Function): MapsEventListener;
+  bindTo(key:string,target:MVCObject,targetKey?:string, noNotify?:boolean):void;
+  changed(key:string):void;
+  get(key:string):any;
+
+}
 
 export interface MapsEventListener{remove():void;}
 
@@ -258,15 +264,98 @@ class Utils {
 export interface TestOverlay{
   bounds:LatLngBoundsLiteral;
   image:string;
-  map?:GoogleMap;
+  map:GoogleMap;
 }
 
 
+function CardOverlay(options:any, google:any){
+  this.extends(CardOverlay, google.maps.OverlayView);
+  //this.latLng = options.marker.getPosition();
+  this._baseZIndex = 100;
+  
+
+  this._isOpen = false;
+  this._buildDom(google);
+  this.setValues(options);
+
+  console.log(this.get('content'));
+
+}
+
+CardOverlay.prototype._buildDom = function(google){
+  console.log("BuildDom");
+  this.bubble_ = document.createElement('div');
+  this.bubble_.style['position'] = 'absolute';
+  this.bubble_.style['zIndex'] = this._baseZIndex;
+
+  this.close_ = document.createElement('img');
+  this.close_.style['position'] = 'absolute';
+  this.close_.style['border'] = 0;
+  this.close_.style['zIndex'] = this._baseZIndex + 1;
+  this.close_.style['cursor'] = 'pointer';
+  this.close.src = 'https://maps.gstatic.com/intl/en_us/mapfiles/iw_close.gif';
+
+  var that = this;
+  google.maps.event.addDomListener(this.close_, 'click',function(){
+    that.close();
+    google.maps.event.trigger(that,'closeclick');
+  });
+
+  this.contentContainer_ = document.createElement('div');
+  this.contentContainer_.style['overflowX'] = 'auto';
+  this.contentContainer_.style['overflowY'] = 'auto';
+  this.contentContainer_.style['cursor'] = 'default';
+  this.contentContainer_.style['clear'] = 'both';
+  this.contentContainer_.style['position'] = 'relative';
+
+  this.content_ = document.createElement('div');
+  this.contentContainer_.appendChild(this.content_);
+
+  this.bubble_.style['display'] = 'none';
+
+  
+
+}
+CardOverlay.prototype.draw = function(){
+  
+  var projection = this.getProjection();
+
+  if(!projection){
+    return;
+  }
+
+  var latLng = this.latLng;
+
+  if(!latLng){
+    this.close();
+    return;
+  }
+
+  var pos = projection.fromLatLngToDivPixel(latLng);
+
+   
+}
+
+CardOverlay.prototype.onAdd = function(){
+
+}
+
+CardOverlay.prototype.onRemove = function(){
+
+}
+CardOverlay.prototype.extends = function(obj1, obj2) {
+  return (function(object){
+    for (var property in object.prototype){
+      this.prototype[property] = object.prototype[property];
+    }
+    return this;
+  }).apply(obj1,[obj2]);
+}
 
 export class InfoBubbleGenerator{
   infobubble:any;
   constructor(options:any,google:any){
-    this.infobubble = new InfoBubble(options, google);
+    this.infobubble = new CardOverlay(options, google);
   }
   getInfoBubble(){
     return this.infobubble;
@@ -343,7 +432,7 @@ function USGSOverlay(options:TestOverlay, google:any) {
   this.extend(USGSOverlay, google.maps.OverlayView)
   this.bounds = new google.maps.LatLngBounds(new google.maps.LatLng(options.bounds.south,options.bounds.west),new google.maps.LatLng(options.bounds.north,options.bounds.east));
   this.image = options.image;
-  this.map = options.map;
+  //this.map = options.map;
   
   var div:HTMLElement;
   this.div = null;
@@ -460,6 +549,7 @@ export interface InfoBubble extends MVCObject{
 }
 
 function InfoBubble(opt_options, google:any) {
+  console.log(opt_options);
   this.extend(InfoBubble, google.maps.OverlayView);
   this.tabs_ = [];
   this.activeTab_ = null;
@@ -524,20 +614,6 @@ function InfoBubble(opt_options, google:any) {
   this.buildDom_();
   
   
-}
-
-InfoBubble.prototype.setValues = function(values){
-  console.log(values);
-  this.options = values;
-  console.log(this.options);
-}
-
-InfoBubble.prototype.set = function (name, value){
-  this.options[name] = value;
-}
-
-InfoBubble.prototype.get = function (name){
-  return this.options[name];
 }
 window['InfoBubble'] = InfoBubble;
 
@@ -1995,6 +2071,7 @@ InfoBubble.prototype.positionCloseButton_ = function() {
     // scrollbar
     right += 15;
   }
+  console.log(this); 
 
   this.close_.style['right'] = this.px(right);
   this.close_.style['top'] = this.px(top);

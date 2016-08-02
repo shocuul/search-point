@@ -30,9 +30,8 @@ export class OverlayViewManager{
     addOverlayView(overlayView: DenethielOverlay){
         //console.log("Estoy agregando un overlayView");
         overlayView.options['content'] = overlayView.content;
-        console.log(overlayView.options);
         //console.log(bounds);
-        const overlayViewPromise = this._mapsWrapper.createInfoBubble({options: overlayView.options});
+        const overlayViewPromise = this._mapsWrapper.createInfoBubble(overlayView.options);
         console.log(overlayViewPromise);
         this._overlayViews.set(overlayView, overlayViewPromise);
     }
