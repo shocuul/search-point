@@ -41,7 +41,12 @@ export class DenethielGoogleMapMarker implements OnDestroy, OnChanges, AfterCont
     constructor(private _markerManager: MarkerManager) { this._id = (markerId++).toString();}
 
     ngAfterContentInit(){
-
+        if(this._infoWindow != null){
+            this._infoWindow.hostMarker = this;
+        }
+        if(this._bubble != null){
+            this._bubble.hostMarker = this;
+        }
     }
 
     ngOnChanges(changes:{[key:string]:SimpleChange}){
@@ -79,7 +84,7 @@ export class DenethielGoogleMapMarker implements OnDestroy, OnChanges, AfterCont
                 this._infoWindow.open();
             }
             if(this.openBubble && this._bubble != null){
-                console.log("Abrir burbuja");
+                //console.log("Abrir burbuja");
                 this._bubble.open();
             }
             this.markerClick.emit(null);

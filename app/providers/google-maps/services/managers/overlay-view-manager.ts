@@ -32,7 +32,6 @@ export class OverlayViewManager{
         overlayView.options['content'] = overlayView.content;
         //console.log(bounds);
         const overlayViewPromise = this._mapsWrapper.createInfoBubble(overlayView.options);
-        console.log(overlayViewPromise);
         this._overlayViews.set(overlayView, overlayViewPromise);
     }
 
@@ -42,6 +41,7 @@ export class OverlayViewManager{
 
     open(overlayView: DenethielOverlay):Promise<void>{
         return this._overlayViews.get(overlayView).then((v) => {
+            console.log(overlayView.hostMarker);
             if(overlayView.hostMarker != null){
                 return this._markerManager.getNativeMarker(overlayView.hostMarker).then((marker) => {
                     return this._mapsWrapper.getNativeMap().then((map) => v.open(map,marker));

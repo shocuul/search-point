@@ -271,50 +271,68 @@ export interface TestOverlay{
 function CardOverlay(options:any, google:any){
   this.extends(CardOverlay, google.maps.OverlayView);
   //this.latLng = options.marker.getPosition();
-  this._baseZIndex = 100;
+  this.baseZIndex_ = 100;
   
 
-  this._isOpen = false;
-  this._buildDom(google);
+  this.isOpen_ = false;
+  //this._buildDom(google);
   this.setValues(options);
-
-  console.log(this.get('content'));
+  this.buildDom_(google);
+  //console.log(this.get('content'));
 
 }
 
-CardOverlay.prototype._buildDom = function(google){
+CardOverlay.prototype.buildDom_ = function(google){
   console.log("BuildDom");
-  this.bubble_ = document.createElement('div');
-  this.bubble_.style['position'] = 'absolute';
-  this.bubble_.style['zIndex'] = this._baseZIndex;
+  var buuble = this.bubble_ = document.createElement('div');
+  buuble.style['position'] = 'absolute';
+  buuble.style['zIndex'] = this.baseZIndex_;
 
-  this.close_ = document.createElement('img');
-  this.close_.style['position'] = 'absolute';
-  this.close_.style['border'] = 0;
-  this.close_.style['zIndex'] = this._baseZIndex + 1;
-  this.close_.style['cursor'] = 'pointer';
-  this.close.src = 'https://maps.gstatic.com/intl/en_us/mapfiles/iw_close.gif';
+  var close = this.close_ = document.createElement('img');
+  close.style['position'] = 'absolute';
+  close.style['border'] = '0';
+  close.style['zIndex'] = this._baseZIndex + 1;
+  close.style['cursor'] = 'pointer';
+  close.style['width'] = '10px';
+  close.style['height'] = '10px';
+  close.src = 'https://maps.gstatic.com/intl/en_us/mapfiles/iw_close.gif';
+
 
   var that = this;
-  google.maps.event.addDomListener(this.close_, 'click',function(){
+  google.maps.event.addDomListener(close, 'click',function(){
+    console.log("cerrar info");
     that.close();
     google.maps.event.trigger(that,'closeclick');
+
   });
 
-  this.contentContainer_ = document.createElement('div');
-  this.contentContainer_.style['overflowX'] = 'auto';
-  this.contentContainer_.style['overflowY'] = 'auto';
-  this.contentContainer_.style['cursor'] = 'default';
-  this.contentContainer_.style['clear'] = 'both';
-  this.contentContainer_.style['position'] = 'relative';
+  var contentContainer = this.contentContainer_ = document.createElement('div');
+  contentContainer.style['overflowX'] = 'auto';
+  contentContainer.style['overflowY'] = 'auto';
+  contentContainer.style['cursor'] = 'default';
+  contentContainer.style['clear'] = 'both';
+  contentContainer.style['position'] = 'relative';
 
   this.content_ = document.createElement('div');
-  this.contentContainer_.appendChild(this.content_);
+  contentContainer.appendChild(this.content_);
 
-  this.bubble_.style['display'] = 'none';
+  console.log(contentContainer);
+
+  buuble.style['display'] = 'none';
+
+  buuble.appendChild(close);
+  buuble.appendChild(contentContainer);
+  
 
   
 
+}
+
+CardOverlay.prototype.px = function(num){
+  if(num){
+    return num + 'px';
+  }
+  return num;
 }
 CardOverlay.prototype.draw = function(){
   
@@ -324,7 +342,7 @@ CardOverlay.prototype.draw = function(){
     return;
   }
 
-  var latLng = this.latLng;
+  var latLng = /** @type {google.maps.LatLng} */(this.get('position'));
 
   if(!latLng){
     this.close();
@@ -333,15 +351,137 @@ CardOverlay.prototype.draw = function(){
 
   var pos = projection.fromLatLngToDivPixel(latLng);
 
+  var width = this.contentContainer_.offsetWidth;
+  var height = this.bubble_.offsetHeight;
+
+  if(!width){
+    return;
+  }
+
+  var top = pos.y - height;
+
+  var left = pos.x - width;
+
+  this.bubble_.style['top'] = this.px(top);
+  this.bubble_.style['left'] = this.px(left);
    
 }
 
 CardOverlay.prototype.onAdd = function(){
+  console.log(this.bubble_);
+  if(!this.bubble_){
+    
+    this.buildDom_();
+    console.log(this.bubble_);
+  }
+
+  var panes = this.getPanes();
+  if(panes){
+    panes.floatPane.appendChild(this.bubble_);
+  }
 
 }
 
 CardOverlay.prototype.onRemove = function(){
 
+  if(this.bubble_ && this.bubble_.parentNode){
+    this.bubble_.parentNode.removeChild(this.bubble_);
+  }
+
+}
+
+CardOverlay.prototype.isOpen = function(){
+  return this.isOpen_;
+}
+
+CardOverlay.prototype.close = function(){
+  if(this.bubble_){
+    this.bubble_.style['display'] = 'none';
+  }
+
+  this.isOpen_ = false;
+}
+
+CardOverlay.prototype.open = function(opt_map, opt_anchor){
+  var that = this;
+  window.setTimeout(function(){
+    that.open_(opt_map,opt_anchor);
+  },0);
+}
+
+CardOverlay.prototype.open_ = function(opt_map, opt_anchor){
+  this.updateContent_()
+  if(opt_map){
+    this.setMap(opt_map);
+  }
+
+  if(opt_anchor){
+    this.set('anchor',opt_anchor);
+    this.bindTo('anchorPoint', opt_anchor);
+    this.bindTo('position', opt_anchor);
+
+  }
+
+  this.bubble_.style['display'] = '';
+
+  this.redraw_();
+  this.isOpen_ = true;
+}
+
+CardOverlay.prototype.redraw_ = function(){
+  this.figureOutSize_();
+  //this.positionCloseButton_();
+  this.draw();
+}
+
+CardOverlay.prototype.figureOutSize_ = function(){
+  this.contentContainer_.style['width'] = '200px';
+  this.contentContainer_.style['height'] = '200px';
+}
+
+CardOverlay.prototype.updateContent_ = function(){
+  if(!this.content_){
+    return;
+  }
+  this.removeChildren_(this.content_);
+  
+  var content = this.getContent();
+  if(content){
+    if(typeof content == 'string'){
+      //pendiente
+      content = this.htmlToDocumentFragment_(content);
+    }
+    this.content_.appendChild(content);
+
+    //falta :C
+  }
+}
+
+CardOverlay.prototype.removeChildren_ = function(node){
+  if(!node){
+    return;
+  }
+  var child;
+  while(child = node.firstChild){
+    node.removeChild(child);
+  }
+}
+CardOverlay.prototype.htmlToDocumentFragment_ = function(htmlString){
+  htmlString = htmlString.replace(/^\s*([\S\s]*)\b\s*$/, '$1');
+  var tempDiv = document.createElement('DIV');
+  tempDiv.innerHTML = htmlString;
+  if (tempDiv.childNodes.length == 1) {
+    return /** @type {!Node} */ (tempDiv.removeChild(tempDiv.firstChild));
+  } else {
+    var fragment = document.createDocumentFragment();
+    while (tempDiv.firstChild) {
+      fragment.appendChild(tempDiv.firstChild);
+    }
+    return fragment;
+}
+}
+CardOverlay.prototype.getContent = function(){
+  return /** @type {Node|string} */ (this.get('content'));
 }
 CardOverlay.prototype.extends = function(obj1, obj2) {
   return (function(object){
@@ -609,13 +749,13 @@ function InfoBubble(opt_options, google:any) {
   if (options['closeSrc'] == undefined) {
     options['closeSrc'] = this.CLOSE_SRC_;
   }
-  console.log(options);
+  
   this.setValues(options);
-  this.buildDom_();
+  this.buildDom_(google);
   
   
 }
-window['InfoBubble'] = InfoBubble;
+//window['InfoBubble'] = InfoBubble;
 
 InfoBubble.prototype.ARROW_SIZE_ = 15;
 
@@ -649,12 +789,12 @@ InfoBubble.prototype.extend = function(obj1, obj2) {
 };
 
 
-InfoBubble.prototype.buildDom_ = function() {
+InfoBubble.prototype.buildDom_ = function(google) {
   console.log("Enter to build dom");
   var bubble = this.bubble_ = document.createElement('div');
   bubble.style['position'] = 'absolute';
   bubble.style['zIndex'] = this.baseZIndex_;
-
+  
   var tabsContainer = this.tabsContainer_ = document.createElement('div');
   tabsContainer.style['position'] = 'relative';
 
@@ -665,9 +805,7 @@ InfoBubble.prototype.buildDom_ = function() {
   close.style['zIndex'] = this.baseZIndex_ + 1;
   close.style['cursor'] = 'pointer';
   close.src = this.get('closeSrc');
-
   var that = this;
-
   var contentContainer = this.contetContainer_ = document.createElement('div');
 
   contentContainer.style['overflowX'] = 'auto';
@@ -710,7 +848,7 @@ InfoBubble.prototype.buildDom_ = function() {
   arrow.appendChild(arrowInner);
   bubble.appendChild(arrow);
 
-  console.log(bubble);
+  console.log(this.bubble);
 
   var stylesheet = document.createElement('style');
   stylesheet.setAttribute('type','text/css');
@@ -731,65 +869,78 @@ InfoBubble.prototype.buildDom_ = function() {
 
 
 InfoBubble.prototype.setBackgroundClassName = function(className){
+  console.log("setBackgroundClassName");
   this.set('backgroundClassName',className);
 };
 
 InfoBubble.prototype['setBackgroundClassName'] = InfoBubble.prototype.setBackgroundClassName;
 
 InfoBubble.prototype.backgroundClassName_changed = function() {
+  console.log("backgroundClassName_changed");
   this.content_.className = this.get('backgroundClassName');
 }
 
 InfoBubble.prototype['backgroundClassName_changed'] = InfoBubble.prototype.backgroundClassName_changed;
 
 InfoBubble.prototype.setTabClassName = function(className){
+  console.log("setTabClassName");
   this.set('tabClassName', className);
 };
 InfoBubble.prototype['setTabClassName'] = InfoBubble.prototype.setTabClassName;
 
 InfoBubble.prototype.tabClassName_changed = function() {
+  console.log("tabClassName_changed");
   this.updateTabStyles_();
 };
 InfoBubble.prototype['tabClassName_changed'] = InfoBubble.prototype.tabClassName_changed;
 
 InfoBubble.prototype.getArrowStyle_ = function(){
+  console.log("getArrowStyle_");
   return parseInt(this.get('arrowStyle'),10) || 0;
 };
 
 InfoBubble.prototype.setArrowStyle = function(style){
+  console.log("setArrowStyle");
   this.set('arrowStyle',style);
 };
 InfoBubble.prototype['setArrowStyle'] = InfoBubble.prototype.setArrowStyle;
 
 InfoBubble.prototype.arrowStyle_changed = function() {
+  console.log("arrowStyle_changed");
   this.arrowSize_changed();
 }
 InfoBubble.prototype['arrowStyle_changed'] = InfoBubble.prototype.arrowStyle_changed;
 
 InfoBubble.prototype.getArrowSize_ = function() {
+  console.log("getArrowSize_");
   return parseInt(this.get('arrowSize'),10) || 0;
 }
 
 InfoBubble.prototype.setArrowSize = function(size) {
+  console.log("setArrowSize");
   this.set('arrowSize',size);
 }
 InfoBubble.prototype['setArrowSize'] = InfoBubble.prototype.setArrowSize;
 
 InfoBubble.prototype.arrowSize_changed = function(){
+  console.log("arrowSize_changed");
   this.borderWidth_changed();
 };
 InfoBubble.prototype['arrowSize_changed'] = InfoBubble.prototype.arrowSize_changed;
 
 InfoBubble.prototype.setArrowPosition = function(pos) {
+  console.log("setArrowPosition");
   this.set('arrowPosition',pos);
 };
 InfoBubble.prototype['setArrowPosition'] = InfoBubble.prototype.setArrowPosition;
 
 InfoBubble.prototype.getArrowPosition_ = function() {
+  console.log("getArrowPosition_");
   return parseInt(this.get('arrowPosition'),10) || 0;
 };
 
 InfoBubble.prototype.arrowPosition_changed = function() {
+  console.log("arrowPosition_changed");
   var pos = this.getArrowPosition_();
   this.arrowOuter_.style['left'] = this.arrowInner_.style['left'] = pos + '%';
 
@@ -798,15 +949,18 @@ InfoBubble.prototype.arrowPosition_changed = function() {
 InfoBubble.prototype['arrowPosition_changed'] = InfoBubble.prototype.arrowPosition_changed;
 
 InfoBubble.prototype.setZIndex = function(zIndex) {
+  console.log("setZIndex");
   this.set('zIndex',zIndex);
 };
 InfoBubble.prototype['zIndex'] = InfoBubble.prototype.setZIndex;
 
 InfoBubble.prototype.getZIndex = function() {
+  console.log("getZIndex");
   return parseInt(this.get('zIndex'),10) || this.baseZIndex_;
 }
 
 InfoBubble.prototype.zIndex_changed = function() {
+  console.log("zIndex_changed");
   var zIndex = this.getZIndex();
 
   this.bubble_.style['zIndex'] = this.baseZIndex_ = zIndex;
@@ -815,15 +969,18 @@ InfoBubble.prototype.zIndex_changed = function() {
 InfoBubble.prototype['zIndex_changed'] = InfoBubble.prototype.zIndex_changed;
 
 InfoBubble.prototype.setShadowStyle = function(shadowStyle) {
+  console.log("setShadowStyle");
   this.set('shadowStyle', shadowStyle);
 };
 InfoBubble.prototype['setShadowStyle'] = InfoBubble.prototype.setShadowStyle;
 
 InfoBubble.prototype.getShadowStyle_ = function() {
+  console.log("getShadowStyle_");
   return parseInt(this.get('shadowStyle'), 10) || 0;
 };
 
 InfoBubble.prototype.shadowStyle_changed = function() {
+  console.log("shadowStyle_changed");
   var shadowStyle = this.getShadowStyle_();
 
   var display = '';
@@ -854,21 +1011,25 @@ InfoBubble.prototype.shadowStyle_changed = function() {
 InfoBubble.prototype['shadowStyle_changed'] = InfoBubble.prototype.shadowStyle_changed;
 
 InfoBubble.prototype.showCloseButton = function() {
+  console.log("showCloseButton");
   this.set('hideCloseButton', false);
 };
 InfoBubble.prototype['showCloseButton'] = InfoBubble.prototype.showCloseButton;
 
 InfoBubble.prototype.hideCloseButton = function() {
+  console.log("hideCloseButton");
   this.set('hideCloseButton', true);
 };
 InfoBubble.prototype['hideCloseButton'] = InfoBubble.prototype.hideCloseButton;
 
 InfoBubble.prototype.hideCloseButton_changed = function() {
+  console.log("hideCloseButton_changed");
   this.close_.style['display'] = this.get('hideCloseButton') ? 'none' : '';
 };
 InfoBubble.prototype['hideCloseButton_changed'] = InfoBubble.prototype.hideCloseButton_changed;
 
 InfoBubble.prototype.setBackgroundColor = function(color) {
+  console.log("setBackgroundColor");
   if (color) {
     this.set('backgroundColor', color);
   }
@@ -879,6 +1040,7 @@ InfoBubble.prototype['setBackgroundColor'] = InfoBubble.prototype.setBackgroundC
  * backgroundColor changed MVC callback
  */
 InfoBubble.prototype.backgroundColor_changed = function() {
+  console.log("backgroundColor_changed");
   var backgroundColor = this.get('backgroundColor');
   this.contentContainer_.style['backgroundColor'] = backgroundColor;
 
@@ -895,6 +1057,7 @@ InfoBubble.prototype['backgroundColor_changed'] = InfoBubble.prototype.backgroun
  * @param {string} color The border color.
  */
 InfoBubble.prototype.setBorderColor = function(color) {
+  console.log("setBorderColor");
   if (color) {
     this.set('borderColor', color);
   }
@@ -905,6 +1068,7 @@ InfoBubble.prototype['setBorderColor'] = InfoBubble.prototype.setBorderColor;
  * borderColor changed MVC callback
  */
 InfoBubble.prototype.borderColor_changed = function() {
+  console.log("borderColor_changed");
   var borderColor = this.get('borderColor');
 
   var contentContainer = this.contentContainer_;
@@ -928,6 +1092,7 @@ InfoBubble.prototype['borderColor_changed'] = InfoBubble.prototype.borderColor_c
  * @param {number} radius The radius of the border.
  */
 InfoBubble.prototype.setBorderRadius = function(radius) {
+  console.log("setBorderRadius");
   this.set('borderRadius', radius);
 };
 InfoBubble.prototype['setBorderRadius'] = InfoBubble.prototype.setBorderRadius;
@@ -940,6 +1105,7 @@ InfoBubble.prototype['setBorderRadius'] = InfoBubble.prototype.setBorderRadius;
  * @return {number} The radius of the border.
  */
 InfoBubble.prototype.getBorderRadius_ = function() {
+  console.log("getBorderRadius_");
   return parseInt(this.get('borderRadius'), 10) || 0;
 };
 
@@ -947,6 +1113,7 @@ InfoBubble.prototype.getBorderRadius_ = function() {
  * borderRadius changed MVC callback
  */
 InfoBubble.prototype.borderRadius_changed = function() {
+  console.log("borderRadius_changed");
   var borderRadius = this.getBorderRadius_();
   var borderWidth = this.getBorderWidth_();
 
@@ -972,6 +1139,7 @@ InfoBubble.prototype['borderRadius_changed'] = InfoBubble.prototype.borderRadius
  * @return {number} width The width of the border.
  */
 InfoBubble.prototype.getBorderWidth_ = function() {
+  console.log("getBorderWidth_");
   return parseInt(this.get('borderWidth'), 10) || 0;
 };
 
@@ -981,6 +1149,7 @@ InfoBubble.prototype.getBorderWidth_ = function() {
  * @param {number} width The width of the border.
  */
 InfoBubble.prototype.setBorderWidth = function(width) {
+  console.log("setBorderWidth");
   this.set('borderWidth', width);
 };
 InfoBubble.prototype['setBorderWidth'] = InfoBubble.prototype.setBorderWidth;
@@ -989,6 +1158,7 @@ InfoBubble.prototype['setBorderWidth'] = InfoBubble.prototype.setBorderWidth;
  * borderWidth change MVC callback
  */
 InfoBubble.prototype.borderWidth_changed = function() {
+  console.log("borderWidth_changed");
   var borderWidth = this.getBorderWidth_();
 
   this.contentContainer_.style['borderWidth'] = this.px(borderWidth);
@@ -1007,6 +1177,7 @@ InfoBubble.prototype['borderWidth_changed'] = InfoBubble.prototype.borderWidth_c
  * @private
  */
 InfoBubble.prototype.updateArrowStyle_ = function() {
+  console.log("updateArrowStyle_");
   var borderWidth = this.getBorderWidth_();
   var arrowSize = this.getArrowSize_();
   var arrowStyle = this.getArrowStyle_();
@@ -1058,6 +1229,7 @@ InfoBubble.prototype.updateArrowStyle_ = function() {
  * @param {number} padding The padding to apply.
  */
 InfoBubble.prototype.setPadding = function(padding) {
+  console.log("setPadding");
   this.set('padding', padding);
 };
 InfoBubble.prototype['setPadding'] = InfoBubble.prototype.setPadding;
@@ -1069,6 +1241,7 @@ InfoBubble.prototype['setPadding'] = InfoBubble.prototype.setPadding;
  * @param {string} src The url of the image used as a close icon
  */
 InfoBubble.prototype.setCloseSrc = function(src) {
+  console.log("setCloseSrc");
   if (src && this.close_) {
     this.close_.src = src;
   }
@@ -1082,6 +1255,7 @@ InfoBubble.prototype['setCloseSrc'] = InfoBubble.prototype.setCloseSrc;
  * @return {number} padding The padding to apply.
  */
 InfoBubble.prototype.getPadding_ = function() {
+  console.log("getPadding_");
   return parseInt(this.get('padding'), 10) || 0;
 };
 
@@ -1090,6 +1264,7 @@ InfoBubble.prototype.getPadding_ = function() {
  * padding changed MVC callback
  */
 InfoBubble.prototype.padding_changed = function() {
+  console.log("padding_changed");
   var padding = this.getPadding_();
   this.contentContainer_.style['padding'] = this.px(padding);
   this.updateTabStyles_();
@@ -1105,6 +1280,7 @@ InfoBubble.prototype['padding_changed'] = InfoBubble.prototype.padding_changed;
  * @return {string|number} A wrapped number.
  */
 InfoBubble.prototype.px = function(num) {
+  console.log("px");
   if (num) {
     // 0 doesn't need to be wrapped
     return num + 'px';
@@ -1139,11 +1315,12 @@ InfoBubble.prototype.addEvents_ = function() {
  * Implementing the OverlayView interface
  */
 InfoBubble.prototype.onAdd = function() {
+  console.log("onAdd");
   if (!this.bubble_) {
     this.buildDom_();
   }
 
-  this.addEvents_();
+  //this.addEvents_();
 
   var panes = this.getPanes();
   if (panes) {
@@ -1161,6 +1338,7 @@ InfoBubble.prototype['onAdd'] = InfoBubble.prototype.onAdd;
  * Implementing the OverlayView interface
  */
 InfoBubble.prototype.draw = function() {
+  console.log("draw");
   var projection = this.getProjection();
 
   if (!projection) {
@@ -1240,6 +1418,7 @@ InfoBubble.prototype['draw'] = InfoBubble.prototype.draw;
  * Removing the InfoBubble from a map
  */
 InfoBubble.prototype.onRemove = function() {
+  console.log("onRemove");
   if (this.bubble_ && this.bubble_.parentNode) {
     this.bubble_.parentNode.removeChild(this.bubble_);
   }
@@ -1260,6 +1439,7 @@ InfoBubble.prototype['onRemove'] = InfoBubble.prototype.onRemove;
  * @return {boolean} If the InfoBubble is open.
  */
 InfoBubble.prototype.isOpen = function() {
+  console.log("isOpen");
   return this.isOpen_;
 };
 InfoBubble.prototype['isOpen'] = InfoBubble.prototype.isOpen;
@@ -1269,6 +1449,7 @@ InfoBubble.prototype['isOpen'] = InfoBubble.prototype.isOpen;
  * Close the InfoBubble
  */
 InfoBubble.prototype.close = function() {
+  console.log("close");
   if (this.bubble_) {
     this.bubble_.style['display'] = 'none';
     // Remove the animation so we next time it opens it will animate again
@@ -1293,6 +1474,7 @@ InfoBubble.prototype['close'] = InfoBubble.prototype.close;
  * @param {google.maps.MVCObject=} opt_anchor Optional anchor to position at.
  */
 InfoBubble.prototype.open = function(opt_map, opt_anchor) {
+  console.log("open");
   var that = this;
   window.setTimeout(function() {
     that.open_(opt_map, opt_anchor);
@@ -1306,6 +1488,7 @@ InfoBubble.prototype.open = function(opt_map, opt_anchor) {
  * @param {google.maps.MVCObject=} opt_anchor Optional anchor to position at.
  */
 InfoBubble.prototype.open_ = function(opt_map, opt_anchor) {
+  console.log("open_");
   this.updateContent_();
 
   if (opt_map) {
@@ -1348,6 +1531,7 @@ InfoBubble.prototype['open'] = InfoBubble.prototype.open;
  * @param {google.maps.LatLng} position The position to set.
  */
 InfoBubble.prototype.setPosition = function(position) {
+  console.log("setPosition");
   if (position) {
     this.set('position', position);
   }
@@ -1361,6 +1545,7 @@ InfoBubble.prototype['setPosition'] = InfoBubble.prototype.setPosition;
  * @return {google.maps.LatLng} the position.
  */
 InfoBubble.prototype.getPosition = function() {
+  console.log("getPosition");
   return /** @type {google.maps.LatLng} */ (this.get('position'));
 };
 InfoBubble.prototype['getPosition'] = InfoBubble.prototype.getPosition;
@@ -1370,6 +1555,7 @@ InfoBubble.prototype['getPosition'] = InfoBubble.prototype.getPosition;
  * position changed MVC callback
  */
 InfoBubble.prototype.position_changed = function() {
+  console.log("position_changed");
   this.draw();
 };
 InfoBubble.prototype['position_changed'] = InfoBubble.prototype.position_changed;
@@ -1379,6 +1565,7 @@ InfoBubble.prototype['position_changed'] = InfoBubble.prototype.position_changed
  * Pan the InfoBubble into view
  */
 InfoBubble.prototype.panToView = function() {
+  console.log("panToView");
   var projection = this.getProjection();
 
   if (!projection) {
@@ -1433,6 +1620,7 @@ InfoBubble.prototype['panToView'] = InfoBubble.prototype.panToView;
  * @private
  */
 InfoBubble.prototype.htmlToDocumentFragment_ = function(htmlString) {
+  console.log("htmlToDocumentFragment_");
   htmlString = htmlString.replace(/^\s*([\S\s]*)\b\s*$/, '$1');
   var tempDiv = document.createElement('DIV');
   tempDiv.innerHTML = htmlString;
@@ -1455,6 +1643,7 @@ InfoBubble.prototype.htmlToDocumentFragment_ = function(htmlString) {
  * @private
  */
 InfoBubble.prototype.removeChildren_ = function(node) {
+  console.log("removeChildren_");
   if (!node) {
     return;
   }
@@ -1472,6 +1661,7 @@ InfoBubble.prototype.removeChildren_ = function(node) {
  * @param {string|Node} content The content to set.
  */
 InfoBubble.prototype.setContent = function(content) {
+  console.log("setContent");
   this.set('content', content);
 };
 InfoBubble.prototype['setContent'] = InfoBubble.prototype.setContent;
@@ -1483,6 +1673,7 @@ InfoBubble.prototype['setContent'] = InfoBubble.prototype.setContent;
  * @return {string|Node} The marker content.
  */
 InfoBubble.prototype.getContent = function() {
+  console.log("getContent");
   return /** @type {Node|string} */ (this.get('content'));
 };
 InfoBubble.prototype['getContent'] = InfoBubble.prototype.getContent;
@@ -1492,6 +1683,7 @@ InfoBubble.prototype['getContent'] = InfoBubble.prototype.getContent;
  * Sets the marker content and adds loading events to images
  */
 InfoBubble.prototype.updateContent_ = function() {
+  console.log("updateContent_");
   if (!this.content_) {
     // The Content area doesnt exist.
     return;
@@ -1524,6 +1716,7 @@ InfoBubble.prototype.updateContent_ = function() {
  * @private
  */
 InfoBubble.prototype.imageLoaded_ = function() {
+  console.log("imageLoaded_");
   var pan = !this.get('disableAutoPan');
   this.redraw_();
   if (pan && (this.tabs_.length == 0 || this.activeTab_.index == 0)) {
@@ -1537,6 +1730,7 @@ InfoBubble.prototype.imageLoaded_ = function() {
  * @private
  */
 InfoBubble.prototype.updateTabStyles_ = function() {
+  console.log("updateTabStyles_");
   if (this.tabs_ && this.tabs_.length) {
     for (var i = 0, tab; tab = this.tabs_[i]; i++) {
       this.setTabStyle_(tab.tab);
@@ -1556,6 +1750,7 @@ InfoBubble.prototype.updateTabStyles_ = function() {
  * @param {Element} tab The tab to style.
  */
 InfoBubble.prototype.setTabStyle_ = function(tab) {
+  console.log("setTabStyle_");
   var backgroundColor = this.get('backgroundColor');
   var borderColor = this.get('borderColor');
   var borderRadius = this.getBorderRadius_();
@@ -1607,6 +1802,7 @@ InfoBubble.prototype.setTabStyle_ = function(tab) {
  * @param {Object} tab The tab to add the actions to.
  */
 InfoBubble.prototype.addTabActions_ = function(tab) {
+  console.log("addTabActions_");
   var that = this;
   tab.listener_ = google.maps.event.addDomListener(tab, 'click', function() {
     that.setTabActive_(this);
@@ -1619,6 +1815,7 @@ InfoBubble.prototype.addTabActions_ = function(tab) {
  * @param {number} index The index of the tab.
  */
 InfoBubble.prototype.setTabActive = function(index) {
+  console.log("setTabActive");
   var tab = this.tabs_[index - 1];
 
   if (tab) {
@@ -1634,6 +1831,7 @@ InfoBubble.prototype['setTabActive'] = InfoBubble.prototype.setTabActive;
  * @param {Object} tab The tab to set active.
  */
 InfoBubble.prototype.setTabActive_ = function(tab) {
+  console.log("setTabActive_");
   if (!tab) {
     this.setContent('');
     this.updateContent_();
@@ -1670,6 +1868,7 @@ InfoBubble.prototype.setTabActive_ = function(tab) {
  * @param {number} width The max width.
  */
 InfoBubble.prototype.setMaxWidth = function(width) {
+  console.log("setMaxWidth");
   this.set('maxWidth', width);
 };
 InfoBubble.prototype['setMaxWidth'] = InfoBubble.prototype.setMaxWidth;
@@ -1679,6 +1878,7 @@ InfoBubble.prototype['setMaxWidth'] = InfoBubble.prototype.setMaxWidth;
  * maxWidth changed MVC callback
  */
 InfoBubble.prototype.maxWidth_changed = function() {
+  console.log("maxWidth_changed");
   this.redraw_();
 };
 InfoBubble.prototype['maxWidth_changed'] = InfoBubble.prototype.maxWidth_changed;
@@ -1690,6 +1890,7 @@ InfoBubble.prototype['maxWidth_changed'] = InfoBubble.prototype.maxWidth_changed
  * @param {number} height The max height.
  */
 InfoBubble.prototype.setMaxHeight = function(height) {
+  console.log("setMaxHeight");
   this.set('maxHeight', height);
 };
 InfoBubble.prototype['setMaxHeight'] = InfoBubble.prototype.setMaxHeight;
@@ -1699,6 +1900,7 @@ InfoBubble.prototype['setMaxHeight'] = InfoBubble.prototype.setMaxHeight;
  * maxHeight changed MVC callback
  */
 InfoBubble.prototype.maxHeight_changed = function() {
+  console.log("maxHeight_changed");
   this.redraw_();
 };
 InfoBubble.prototype['maxHeight_changed'] = InfoBubble.prototype.maxHeight_changed;
@@ -1710,6 +1912,7 @@ InfoBubble.prototype['maxHeight_changed'] = InfoBubble.prototype.maxHeight_chang
  * @param {number} width The min width.
  */
 InfoBubble.prototype.setMinWidth = function(width) {
+  console.log("setMinWidth");  
   this.set('minWidth', width);
 };
 InfoBubble.prototype['setMinWidth'] = InfoBubble.prototype.setMinWidth;
@@ -1719,6 +1922,7 @@ InfoBubble.prototype['setMinWidth'] = InfoBubble.prototype.setMinWidth;
  * minWidth changed MVC callback
  */
 InfoBubble.prototype.minWidth_changed = function() {
+   console.log("minWidth_changed"); 
   this.redraw_();
 };
 InfoBubble.prototype['minWidth_changed'] = InfoBubble.prototype.minWidth_changed;
@@ -1730,6 +1934,7 @@ InfoBubble.prototype['minWidth_changed'] = InfoBubble.prototype.minWidth_changed
  * @param {number} height The min height.
  */
 InfoBubble.prototype.setMinHeight = function(height) {
+  console.log("setMinHeight"); 
   this.set('minHeight', height);
 };
 InfoBubble.prototype['setMinHeight'] = InfoBubble.prototype.setMinHeight;
@@ -1739,6 +1944,7 @@ InfoBubble.prototype['setMinHeight'] = InfoBubble.prototype.setMinHeight;
  * minHeight changed MVC callback
  */
 InfoBubble.prototype.minHeight_changed = function() {
+  console.log("minHeight_changed");
   this.redraw_();
 };
 InfoBubble.prototype['minHeight_changed'] = InfoBubble.prototype.minHeight_changed;
@@ -1751,6 +1957,7 @@ InfoBubble.prototype['minHeight_changed'] = InfoBubble.prototype.minHeight_chang
  * @param {string|Element} content The content of the tab.
  */
 InfoBubble.prototype.addTab = function(label, content) {
+  console.log("addTab");
   var tab = document.createElement('DIV');
   tab.innerHTML = label;
 
@@ -1901,6 +2108,9 @@ InfoBubble.prototype.getElementSize_ = function(element, opt_maxWidth,
  * @private
  */
 InfoBubble.prototype.redraw_ = function() {
+  if(!this.bubble){
+    this.buildDom_();
+  }
   this.figureOutSize_();
   this.positionCloseButton_();
   this.draw();
@@ -2071,7 +2281,6 @@ InfoBubble.prototype.positionCloseButton_ = function() {
     // scrollbar
     right += 15;
   }
-  console.log(this); 
 
   this.close_.style['right'] = this.px(right);
   this.close_.style['top'] = this.px(top);

@@ -16,16 +16,18 @@ let OverlayId = 1;
     inputs:['options'],
     outputs:['overlayClose'],
     template:`
+    
     <div class='denethiel-overlay-content'>
         <ng-content></ng-content>
     </div>
     `
 })
 export class DenethielOverlay implements OnDestroy, OnChanges, AfterContentInit{
-    hostMarker: DenethielGoogleMapMarker;
     options:any;
     content: Node;
     isOpen: boolean = false;
+
+    hostMarker: DenethielGoogleMapMarker;
     overlayClose: EventEmitter<void> = new EventEmitter<void>();
 
     private _overlayaddedToManager:boolean = false;
