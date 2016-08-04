@@ -18,6 +18,8 @@
 @import "../pages/item/item.scss";
 
 
+@import "../pages/login/login.scss";
+
 
 .search-point-logo{
     background: url('../../build/img/logo.png') no-repeat;
@@ -31,4 +33,12 @@
 
 .no-items{
     text-align: center;
+}
+
+.item{
+    color: #fff;
+    background: transparent;
+    .item-inner{
+        border-bottom: 1px solid #00ff00;
+    }
 }

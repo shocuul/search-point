@@ -26,10 +26,12 @@
 // are different per mode.
 
 $colors: (
-  primary:    #66cc66,
+  primary:    #00ff00,
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
   dark:       #222,
   favorite:   #69BB7B
 );
+
+$text-input-ios-background-color:rgba(255,0,0,0.1);;

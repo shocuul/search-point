@@ -1,20 +1,26 @@
-import {Component} from '@angular/core';
-import {Platform, ionicBootstrap} from 'ionic-angular';
+import {Component, ViewChild} from '@angular/core';
+import {Platform, ionicBootstrap, Nav} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
 import {WpApi} from './providers/wp-api/wp-api';
 import {AppProvider} from './providers/wp-api/app-provider';
 
+import {LoginPage} from './pages/login/login';
+
 
 @Component({
-  template: '<ion-nav [root]="rootPage"></ion-nav>'
+  templateUrl: 'build/app.html'
 })
 export class SearchPointApp {
 
-  private rootPage:any;
+  @ViewChild(Nav) nav: Nav;
+
+  rootPage: any = LoginPage;
+
+  //private rootPage:any;
 
   constructor(private platform:Platform) {
-    this.rootPage = TabsPage;
+    //this.rootPage = TabsPage;
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

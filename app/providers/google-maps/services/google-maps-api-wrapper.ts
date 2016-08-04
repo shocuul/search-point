@@ -65,7 +65,7 @@ export class GoogleMapsAPIWrapper{
 
     createMarker(options:mapTypes.MarkerOptions = <mapTypes.MarkerOptions>{}):Promise<mapTypes.Marker>{
         return this._map.then((map:mapTypes.GoogleMap) => {
-            options.map = map;
+            options.map = map;``
             return new google.maps.Marker(options);
         });
     }
