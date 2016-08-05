@@ -16,28 +16,48 @@
 <ion-content class="login" padding>
   <ion-grid>
     <ion-row>
-      <img src="../../build/img/Name.png" class="center">
+      <img src="img/Name.png" class="center">
     </ion-row>
     <ion-row>
-      <img src="../../build/img/logo3D.png" class="center">
+      <img src="img/Logo3D.png" class="center">
     </ion-row>
-    <div class="inputs">
+    <div class="login-inputs" *ngIf="!showRegister">
       <ion-grid>
         <ion-row>
-          <ion-col width-10><img src="../../build/img/Male User.png" class="icon-login"></ion-col>
+          <ion-col width-10><img src="img/Male User.png" class="icon-login"></ion-col>
           <ion-col>
           <ion-item><ion-input type="text" placeholder="Usuario"></ion-input></ion-item>
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-10><img src="../../build/img/Lock .png" class="icon-login"></ion-col>
+          <ion-col width-10><img src="img/Lock .png" class="icon-login"></ion-col>
           <ion-col>
-            <ion-item><ion-input type="text" placeholder="Contraseña" ></ion-input></ion-item></ion-col>
+            <ion-item><ion-input type="password" placeholder="Contraseña" ></ion-input></ion-item></ion-col>
         </ion-row>
       </ion-grid> 
     </div>
+    <div class="register-inputs" *ngIf="showRegister">
+      <ion-grid>
+        <ion-row>
+          <ion-col width-10><img src="img/Male User.png" class="icon-login"></ion-col>
+          <ion-col><ion-item><ion-input type="text" placeholder="Usuario"></ion-input></ion-item></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-10><img src="img/Message.png" class="icon-login"></ion-col>
+          <ion-col><ion-item><ion-input type="text" placeholder="Correo Electronico"></ion-input></ion-item></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-10><img src="img/Lock .png" class="icon-login"></ion-col>
+          <ion-col><ion-item><ion-input type="password" placeholder="Contraseña"></ion-input></ion-item></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-10><img src="img/Lock .png" class="icon-login"></ion-col>
+          <ion-col><ion-item><ion-input type="password" placeholder="Confirmar Contraseña"></ion-input></ion-item></ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
     <ion-row>
-      <button clear class="center">Registrarse</button>
+      <button clear class="center" (click)="toggleLogin()">{{btnText}}</button>
     </ion-row>
   </ion-grid>
 

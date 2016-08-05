@@ -12,8 +12,20 @@ import { NavController } from 'ionic-angular';
 })
 export class LoginPage {
 
+  showRegister:boolean = false;
+  btnText:string = 'Registrarse';
   constructor(private nav: NavController) {
+    
+  }
 
+  toggleLogin(){
+    if(this.showRegister){
+      this.showRegister = false;
+      this.btnText = 'Registrarse'
+    }else{
+      this.showRegister = true;
+      this.btnText = 'Iniciar Sesion'
+    }
   }
 
 }

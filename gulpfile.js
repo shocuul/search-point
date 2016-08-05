@@ -66,7 +66,7 @@ gulp.task('build', ['clean'], function(done){
 
 var copyImages = function(){
   return gulp.src('app/img/**/*.+(jpg|png|svg)')
-  .pipe(gulp.dest('www/build/img'));
+  .pipe(gulp.dest('www/img'));
 }
 gulp.task('sass', buildSass);
 gulp.task('html', copyHTML);

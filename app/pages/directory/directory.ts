@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, Popover, Loading} from 'ionic-angular';
+import {NavController, Popover, LoadingController, PopoverController} from 'ionic-angular';
 import {AppProvider} from '../../providers/wp-api/app-provider';
 import {CategoryPage} from '../category-page/category-page'
 import {Category} from '../../providers/wp-api/data-clases';
@@ -11,14 +11,17 @@ import {LocationPopover} from './location'
   providers:[AppProvider]
 })
 export class DirectoryPage implements OnInit {
-  constructor(private navController: NavController, private appProvider: AppProvider) {
+  constructor(private navController: NavController, 
+  public appProvider: AppProvider,
+  public loadingCtrl: LoadingController,
+  public popoverCtrl: PopoverController) {
   }
 
   ngOnInit(){
-    let loading = Loading.create({
-      content:'Cargando categorias...'
-    });
-    this.navController.present(loading);
+    let loading = this.loadingCtrl.create({
+      content: 'Cargando categorias...'
+    })
+    loading.present();
     Geolocation.getCurrentPosition().then((resp)=>{
       this.appProvider.getItems(resp.coords.latitude,resp.coords.longitude);
       this.appProvider.filteredCategories$.subscribe((data) => {
@@ -35,9 +38,7 @@ export class DirectoryPage implements OnInit {
   }
 
   showLocationPopover(ev){
-    let popover = Popover.create(LocationPopover,{provider:this.appProvider});
-    this.navController.present(popover,{
-      ev:ev
-    });
+    let popover = this.popoverCtrl.create(LocationPopover,{provider:this.appProvider});
+    popover.present({ev:ev});
   }
 }

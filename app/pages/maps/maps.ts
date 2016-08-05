@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, Modal, Loading, Popover} from 'ionic-angular';
+import {NavController, ModalController, LoadingController, PopoverController} from 'ionic-angular';
 import {Category, Item} from '../../providers/wp-api/data-clases'
 import {AppProvider} from '../../providers/wp-api/app-provider';
 import {Geolocation} from 'ionic-native';
@@ -78,7 +78,11 @@ export class MapsPage implements OnInit {
     }
   ];
   
-  constructor(private navController: NavController, private appProvider: AppProvider) { }
+  constructor(private navController: NavController, 
+  private appProvider: AppProvider, 
+  public modalCtrl: ModalController, 
+  public loadingCtrl: LoadingController, 
+  public popoverCtrl: PopoverController) { }
 
   ngOnInit(){
      this.loadMap();
@@ -88,30 +92,28 @@ export class MapsPage implements OnInit {
 
   loadMap(){
     
-    let loading = Loading.create({
-      content:'Cargando Mapa...'
-    });
-    this.navController.present(loading);
+    let loading = this.loadingCtrl.create({
+      content: 'Cargando Mapa...'
+    })
+    loading.present();
     Geolocation.getCurrentPosition().then((resp)=>{
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
       this.appProvider.getItems(resp.coords.latitude,resp.coords.longitude);
       loading.dismiss();
     })
-  }
+  } 
 
   showFilterPopOver(ev){
-    let popover = Popover.create(FilterPopover,{provider:this.appProvider});
-    this.navController.present(popover,{
-      ev:ev
-    });
+    let popover = this.popoverCtrl.create(FilterPopover,{provider:this.appProvider});
+
+    popover.present({ev:ev});
   }
 
   showModal(){
     //this.overlay.toggle();
-    
-    let modal = Modal.create(SearchModal)
-    this.navController.present(modal);
+    let modal = this.modalCtrl.create(SearchModal);
+    modal.present();
     
   }
 }
