@@ -21,14 +21,24 @@
     <ion-row>
       <img src="../../build/img/logo3D.png" class="center">
     </ion-row>
-    <div class="inputs"> 
-    <ion-item>
-      <ion-input type="text" placeholder="Usuario"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input type="text" placeholder="Contraseña" ></ion-input>
-    </ion-item>
+    <div class="inputs">
+      <ion-grid>
+        <ion-row>
+          <ion-col width-10><img src="../../build/img/Male User.png" class="icon-login"></ion-col>
+          <ion-col>
+          <ion-item><ion-input type="text" placeholder="Usuario"></ion-input></ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-10><img src="../../build/img/Lock .png" class="icon-login"></ion-col>
+          <ion-col>
+            <ion-item><ion-input type="text" placeholder="Contraseña" ></ion-input></ion-item></ion-col>
+        </ion-row>
+      </ion-grid> 
     </div>
+    <ion-row>
+      <button clear class="center">Registrarse</button>
+    </ion-row>
   </ion-grid>
 
 

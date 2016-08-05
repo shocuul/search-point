@@ -41,6 +41,7 @@ gulp.task('watch', ['clean'], function(done){
     function(){
       gulpWatch('app/**/*.scss', function(){ gulp.start('sass'); });
       gulpWatch('app/**/*.html', function(){ gulp.start('html'); });
+      gulpWatch('app/img/**/*.(jpg|png|svg)', function(){ gulp.start('images')});
       buildBrowserify({ watch: true }).on('end', done);
     }
   );
@@ -64,7 +65,7 @@ gulp.task('build', ['clean'], function(done){
 });
 
 var copyImages = function(){
-  return gulp.src('app/img/**/*.+(jgp|png|svg)')
+  return gulp.src('app/img/**/*.+(jpg|png|svg)')
   .pipe(gulp.dest('www/build/img'));
 }
 gulp.task('sass', buildSass);
